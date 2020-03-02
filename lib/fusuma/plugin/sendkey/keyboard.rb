@@ -17,7 +17,7 @@ class Keyboard
     press_commands = codes.map { |code| press_command(code) }
     release_commands = codes.reverse.map { |code| release_command(code) }
 
-    (press_commands | release_commands).join(' ; ')
+    (press_commands | release_commands).join(' && ')
   end
 
   def press_command(code)
@@ -34,12 +34,13 @@ class Keyboard
 
   def support?(code)
     @supported_code ||= {}
-    @supported_code[:code] ||= if @device.support?(code)
-                                 true
-                               else
-                                 warn "Key: #{code} is unsupported"
-                                 exit 1
-                               end
+    @supported_code[code] ||= if @device.support?(code)
+                                true
+                              else
+                                warn "sendkey: #{code} is unsupported."
+                                warn 'Please check your config.yml.'
+                                exit 1
+                              end
   end
 
   def available_codes
