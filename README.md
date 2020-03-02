@@ -2,7 +2,7 @@
 
 [Fusuma](https://github.com/iberianpig/fusuma) plugin that sending virtual keyboard events
 
-* Send emulate keyboard events with evemu-event
+* Emulate keyboard events with evemu-event
 * This plugin replaces xdotool
 
 ## Installation
