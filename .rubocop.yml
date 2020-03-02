@@ -1,0 +1,13 @@
+Metrics/ModuleLength:
+  Exclude:
+    - "**/*_spec.rb"
+
+Metrics/BlockLength:
+  Exclude:
+    - "**/*_spec.rb"
+    - "fusuma-plugin-*.gemspec"
+
+Metrics/LineLength:
+  Max: 100
+  Exclude:
+    - "fusuma-plugin-*.gemspec"

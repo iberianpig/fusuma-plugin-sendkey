@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require_relative '../lib/fusuma/plugin/sendkey/keyboard.rb'
+
+option = {}
+opt = OptionParser.new
+
+opt.on('-l', '--list-keycodes',
+       'List available keycodes') do |v|
+  option[:list] = v
+end
+
+opt.on('--version', 'Show version') do |v|
+  option[:version] = v
+end
+
+opt.parse!(ARGV)
+
+if option[:list]
+  puts Keyboard.new.available_codes
+  return
+end
+
+if option[:version]
+  puts Fusuma::Plugin::Sendkey::VERSION
+  return
+end
+
+param = ARGV.first
+
+if param.nil?
+  warn 'fusuma-sendkey require 1 arugument'
+  warn 'e.g. fusuma-sendkey LEFTALT+LEFT'
+  exit 1
+end
+
+Keyboard.new.type_command(param: param).tap do |command|
+  exec(command)
+end
