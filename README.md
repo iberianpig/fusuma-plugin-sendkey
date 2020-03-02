@@ -30,12 +30,12 @@ $ fusuma-sendkey -l
 
 ## Run fusuma-sendkey on Terminal
 
-* `fusuma-plugin-sendkey` can emulate keyboard inputs as a command
+* `fusuma-sendkey` can emulate keyboard inputs as a command
 * Combine keys for pressing the same time with `+` 
 
 
 ```sh
-$ fusuma-plugin-sendkey LEFTCTRL+T
+$ fusuma-sendkey LEFTCTRL+T
 ```
 
 
