@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['iberianpig']
   spec.email         = ['yhkyky@gmail.com']
 
-  spec.summary       = 'Fusuma plugin that sending virtual key events'
-  spec.description   = 'Fusuma::Plugin::Sendkey emulate key events with evemu-event'
+  spec.summary       = 'Fusuma plugin that sending virtual keyboard events'
+  spec.description   = 'Fusuma::Plugin::Sendkey emulate keyboard events with evemu-event'
   spec.homepage      = 'https://github.com/iberianpig/fusuma-plugin-sendkey'
   spec.license       = 'MIT'
 
