@@ -13,7 +13,7 @@ module Fusuma
         def execute(event)
           return if search_command(event).nil?
 
-          MultiLogger.info(sendkey: search_command(event))
+          MultiLogger.info(sendkey: search_param(event))
           pid = fork do
             Process.daemon(true)
             exec(search_command(event))
@@ -35,13 +35,15 @@ module Fusuma
         # @return [String]
         # @return [NilClass]
         def search_command(event)
-          index = Config::Index.new([*event.record.index.keys, :sendkey])
-
-          param = Config.search(index)
-
           @keyboard ||= Keyboard.new
+          @keyboard.type_command(param: search_param(event))
+        end
 
-          @keyboard.type_command(param: param)
+        private
+
+        def search_param(event)
+          index = Config::Index.new([*event.record.index.keys, :sendkey])
+          Config.search(index)
         end
       end
     end
