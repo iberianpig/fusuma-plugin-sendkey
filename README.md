@@ -1,34 +1,62 @@
-# Fusuma::Plugin::Sendkey
+# Fusuma::Plugin::Sendkey [![Gem Version](https://badge.fury.io/rb/fusuma-plugin-sendkey.svg)](https://badge.fury.io/rb/fusuma-plugin-sendkey) [![Build Status](https://travis-ci.com/iberianpig/fusuma-plugin-sendkey.svg?branch=master)](https://travis-ci.com/iberianpig/fusuma-plugin-sendkey)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fusuma/plugin/sendkey`. To experiment with that code, run `bin/console` for an interactive prompt.
+[Fusuma](https://github.com/iberianpig/fusuma) plugin that sending virtual keyboard events
 
-TODO: Delete this and the text above, and describe your gem
+* Send emulate keyboard events with evemu-event
+* This plugin replaces xdotool
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Run the following code in your terminal.
 
-```ruby
-gem 'fusuma-plugin-sendkey'
+### Install dependencies
+
+```sh
+$ sudo apt-get install evemu-tools libevdev-dev
 ```
 
-And then execute:
+### Install fusuma-plugin-sendkey
 
-    $ bundle
+```sh
+$ gem install fusuma-plugin-sendkey
+```
 
-Or install it yourself as:
 
-    $ gem install fusuma-plugin-sendkey
+## List avaiable keys
 
-## Usage
+```sh
+$ fusuma-sendkey -l
+```
 
-TODO: Write usage instructions here
+## Run fusuma-sendkey on Terminal
 
-## Development
+* `fusuma-plugin-sendkey` can emulate keyboard inputs as a command
+* Combine keys for pressing the same time with `+` 
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```sh
+$ fusuma-plugin-sendkey LEFTCTRL+T
+```
+
+
+## Add sendkey properties to config.yml
+
+Add `sendkey:` property in `~/.config/fusuma/config.yml`.
+
+lines beginning from `#` are comments
+
+```yaml
+swipe:
+  3:
+    left:
+      sendkey: "LEFTALT+RIGHT" # history back
+    right:
+      sendkey: "LEFTALT+LEFT" # history forward
+    up:
+      sendkey: "LEFTCTRL+T" # open new tab
+    down:
+      sendkey: "LEFTCTRL+W" # close tab
+```
 
 ## Contributing
 
