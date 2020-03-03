@@ -7,6 +7,12 @@ module Fusuma
     module Executors
       # Control Window or Workspaces by executing wctrl
       class SendkeyExecutor < Executor
+        def config_param_types
+          {
+            'device_path': String
+          }
+        end
+
         # execute sendkey command
         # @param event [Event]
         # @return [nil]
@@ -35,7 +41,10 @@ module Fusuma
         # @return [String]
         # @return [NilClass]
         def search_command(event)
-          @keyboard ||= Keyboard.new
+          @keyboard ||= begin
+                          device = Device.new(path: config_params(:device_path))
+                          Keyboard.new(device: device)
+                        end
           @keyboard.type_command(param: search_param(event))
         end
 

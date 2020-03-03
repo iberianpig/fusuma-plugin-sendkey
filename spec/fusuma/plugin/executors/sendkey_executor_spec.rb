@@ -12,24 +12,36 @@ module Fusuma
   module Plugin
     module Executors
       RSpec.describe SendkeyExecutor do
-        before do
-          index = Config::Index.new([:dummy, 1, :direction])
-          record = Events::Records::IndexRecord.new(index: index)
-          @event = Events::Event.new(tag: 'dummy_detector', record: record)
-          @executor = SendkeyExecutor.new
-        end
-
         around do |example|
+          @dummy_device_path = Tempfile.create.path
           ConfigHelper.load_config_yml = <<~CONFIG
             dummy:
               1:
                 direction:
-                  sendkey: A
+                  sendkey: KEY_CODE
+
+            plugin:
+              executors:
+                sendkey_executor:
+                  device_path: #{@dummy_device_path}
           CONFIG
 
           example.run
 
           Config.custom_path = nil
+        end
+
+        before do
+          index = Config::Index.new([:dummy, 1, :direction])
+          record = Events::Records::IndexRecord.new(index: index)
+          @event = Events::Event.new(tag: 'dummy_detector', record: record)
+          @executor = SendkeyExecutor.new
+
+          device = Device.new(path: @dummy_device_path)
+          allow(device).to receive(:support?).with('MODIFIER_CODE').and_return true
+          allow(device).to receive(:support?).with('KEY_CODE').and_return true
+          allow(device).to receive(:support?).with('INVALID_CODE').and_return false
+          allow(Device).to receive(:new).with(path: @dummy_device_path).and_return device
         end
 
         describe '#execute' do
@@ -60,13 +72,17 @@ module Fusuma
         end
 
         describe '#search_command' do
-          context "when sendkey: 'LEFTALT+LEFT'" do
+          context "when sendkey: 'MODIFIER_CODE+KEY_CODE'" do
             around do |example|
               ConfigHelper.load_config_yml = <<~CONFIG
                 dummy:
                   1:
                     direction:
-                      sendkey: 'LEFTALT+LEFT'
+                      sendkey: 'MODIFIER_CODE+KEY_CODE'
+                plugin:
+                  executors:
+                    sendkey_executor:
+                      device_path: #{@dummy_device_path}
               CONFIG
 
               example.run
@@ -76,17 +92,21 @@ module Fusuma
 
             it 'should return evemu-event command' do
               expect(@executor.search_command(@event))
-                .to match(/evemu-event\s.+KEY_LEFTALT.+LEFT/)
+                .to match(/evemu-event\s.+MODIFIER_CODE.+KEY_CODE./)
             end
           end
 
-          context "when sendkey: 'INVALID_KEY'" do
+          context "when sendkey: 'INVALID_CODE'" do
             around do |example|
               ConfigHelper.load_config_yml = <<~CONFIG
                 dummy:
                   1:
                     direction:
-                      sendkey: 'INVALID_KEY'
+                      sendkey: 'INVALID_CODE'
+                plugin:
+                  executors:
+                    sendkey_executor:
+                      device_path: #{@dummy_device_path}
               CONFIG
 
               example.run
