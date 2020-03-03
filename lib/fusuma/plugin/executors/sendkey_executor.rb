@@ -42,8 +42,8 @@ module Fusuma
         # @return [NilClass]
         def search_command(event)
           @keyboard ||= begin
-                          device = Device.new(path: config_params(:device_path))
-                          Keyboard.new(device: device)
+                          device = Sendkey::Device.new(path: config_params(:device_path))
+                          Sendkey::Keyboard.new(device: device)
                         end
           @keyboard.type_command(param: search_param(event))
         end

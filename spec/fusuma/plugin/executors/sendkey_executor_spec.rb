@@ -37,11 +37,11 @@ module Fusuma
           @event = Events::Event.new(tag: 'dummy_detector', record: record)
           @executor = SendkeyExecutor.new
 
-          device = Device.new(path: @dummy_device_path)
+          device = Sendkey::Device.new(path: @dummy_device_path)
           allow(device).to receive(:support?).with('MODIFIER_CODE').and_return true
           allow(device).to receive(:support?).with('KEY_CODE').and_return true
           allow(device).to receive(:support?).with('INVALID_CODE').and_return false
-          allow(Device).to receive(:new).with(path: @dummy_device_path).and_return device
+          allow(Sendkey::Device).to receive(:new).with(path: @dummy_device_path).and_return device
         end
 
         describe '#execute' do
