@@ -3,6 +3,7 @@
 
 require 'optparse'
 require_relative '../lib/fusuma/plugin/sendkey/keyboard.rb'
+require_relative '../lib/fusuma/plugin/sendkey/version.rb'
 
 option = {}
 opt = OptionParser.new
