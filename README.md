@@ -3,7 +3,7 @@
 [Fusuma](https://github.com/iberianpig/fusuma) plugin that sending virtual keyboard events
 
 * Emulate keyboard events with evemu-event
-* This plugin replaces xdotool
+* This plugin is wayland compatible and alternative to xdotool
 
 ## Installation
 
@@ -18,7 +18,7 @@ $ sudo apt-get install evemu-tools libevdev-dev ruby-ffi
 ### Install fusuma-plugin-sendkey
 
 ```sh
-$ gem install fusuma-plugin-sendkey
+$ sudo gem install fusuma-plugin-sendkey
 ```
 
 
