@@ -22,7 +22,7 @@ $ sudo gem install fusuma-plugin-sendkey
 ```
 
 
-## List avaiable keys
+## List available keys
 
 ```sh
 $ fusuma-sendkey -l

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'linux_input'
 require 'evdev'
 
 module Fusuma
@@ -12,13 +13,11 @@ module Fusuma
           return if path && (@evdev = Evdev.new(path))
 
           (0..99).lazy.find do |i|
-            begin
-              evdev = Evdev.new("/dev/input/event#{i}")
-              @evdev = evdev if evdev.supports_event?(convert_keycode('LEFTALT'))
-            rescue Errno::ENOENT # No such file or directory
-              false
-              # TODO: rescue Errno::EACCES
-            end
+            evdev = Evdev.new("/dev/input/event#{i}")
+            @evdev = evdev if evdev.supports_event?(convert_keycode('LEFTALT'))
+          rescue Errno::ENOENT # No such file or directory
+            false
+            # TODO: rescue Errno::EACCES
           end
         end
 
