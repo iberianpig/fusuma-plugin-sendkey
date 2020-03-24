@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'evdev', '~> 1.0'
   spec.add_dependency 'fusuma', '~> 1.5'
+  spec.add_dependency 'linux_input', '~> 1.1'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'github_changelog_generator', '~> 1.14'
