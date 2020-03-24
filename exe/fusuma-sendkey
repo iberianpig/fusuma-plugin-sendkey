@@ -20,7 +20,7 @@ end
 opt.parse!(ARGV)
 
 if option[:list]
-  puts Fusuma::Plugin::Sendkey::Keyboard.new.available_codes
+  puts Fusuma::Plugin::Sendkey::Keyboard.new.search_codes
   return
 end
 
@@ -37,6 +37,5 @@ if param.nil?
   exit 1
 end
 
-Fusuma::Plugin::Sendkey::Keyboard.new.type_command(param: param).tap do |command|
-  exec(command)
-end
+keyboard = Fusuma::Plugin::Sendkey::Keyboard.new
+keyboard.valid?(param: param) && keyboard.type(param: param)

@@ -17,12 +17,10 @@ module Fusuma
         # @param event [Event]
         # @return [nil]
         def execute(event)
-          return if search_command(event).nil?
-
           MultiLogger.info(sendkey: search_param(event))
           pid = fork do
             Process.daemon(true)
-            exec(search_command(event))
+            keyboard.type(param: search_param(event))
           end
 
           Process.detach(pid)
@@ -34,21 +32,17 @@ module Fusuma
         def executable?(event)
           event.tag.end_with?('_detector') &&
             event.record.type == :index &&
-            search_command(event)
+            keyboard.valid?(param: search_param(event))
         end
 
-        # @param event [Event]
-        # @return [String]
-        # @return [NilClass]
-        def search_command(event)
+        private
+
+        def keyboard
           @keyboard ||= begin
                           device = Sendkey::Device.new(path: config_params(:device_path))
                           Sendkey::Keyboard.new(device: device)
                         end
-          @keyboard.type_command(param: search_param(event))
         end
-
-        private
 
         def search_param(event)
           index = Config::Index.new([*event.record.index.keys, :sendkey])

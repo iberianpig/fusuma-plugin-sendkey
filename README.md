@@ -2,7 +2,7 @@
 
 [Fusuma](https://github.com/iberianpig/fusuma) plugin that sending virtual keyboard events
 
-* Emulate keyboard events with evemu-event
+* Send keyboard events with writing event /dev/input/eventN
 * This plugin is wayland compatible and alternative to xdotool
 
 ## Installation
@@ -12,7 +12,7 @@ Run the following code in your terminal.
 ### Install dependencies
 
 ```sh
-$ sudo apt-get install evemu-tools libevdev-dev ruby-ffi
+$ sudo apt-get install libevdev-dev ruby-ffi
 ```
 
 ### Install fusuma-plugin-sendkey
@@ -30,12 +30,13 @@ $ fusuma-sendkey -l
 
 ## Run fusuma-sendkey on Terminal
 
-* `fusuma-sendkey` can emulate keyboard inputs as a command
+* `fusuma-sendkey` command is available on your terminal
+* `fusuma-sendkey` can send multiple key events
 * Combine keys for pressing the same time with `+` 
 
 
 ```sh
-$ fusuma-sendkey LEFTCTRL+T
+$ fusuma-sendkey LEFTCTRL+T # press ctrl key + t key
 ```
 
 

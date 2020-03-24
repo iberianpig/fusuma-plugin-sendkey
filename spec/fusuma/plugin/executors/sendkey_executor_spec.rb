@@ -38,9 +38,9 @@ module Fusuma
           @executor = SendkeyExecutor.new
 
           device = Sendkey::Device.new(path: @dummy_device_path)
-          allow(device).to receive(:support?).with('MODIFIER_CODE').and_return true
-          allow(device).to receive(:support?).with('KEY_CODE').and_return true
-          allow(device).to receive(:support?).with('INVALID_CODE').and_return false
+          allow(device).to receive(:support?).with('KEY_MODIFIER_CODE').and_return true
+          allow(device).to receive(:support?).with('KEY_KEY_CODE').and_return true
+          allow(device).to receive(:support?).with('KEY_INVALID_CODE').and_return false
           allow(Sendkey::Device).to receive(:new).with(path: @dummy_device_path).and_return device
         end
 
@@ -50,8 +50,11 @@ module Fusuma
             allow(Process).to receive(:detach).with(anything)
 
             expect(@executor).to receive(:fork).and_yield do |block_context|
-              allow(block_context).to receive(:search_command).with(@event)
-              expect(block_context).to receive(:exec).with(anything)
+              allow(block_context).to receive(:search_param).with(@event)
+
+              keyboard = double(Sendkey::Keyboard)
+              allow(block_context).to receive(:keyboard).and_return(keyboard)
+              allow(keyboard).to receive(:type).with(anything)
             end
 
             @executor.execute(@event)
@@ -69,9 +72,7 @@ module Fusuma
             end
             it { expect(@executor.executable?(@event)).to be_falsey }
           end
-        end
 
-        describe '#search_command' do
           context "when sendkey: 'MODIFIER_CODE+KEY_CODE'" do
             around do |example|
               ConfigHelper.load_config_yml = <<~CONFIG
@@ -90,9 +91,8 @@ module Fusuma
               Config.custom_path = nil
             end
 
-            it 'should return evemu-event command' do
-              expect(@executor.search_command(@event))
-                .to match(/evemu-event\s.+MODIFIER_CODE.+KEY_CODE./)
+            it 'should return true' do
+              expect(@executor.executable?(@event)) .to be_truthy
             end
           end
 
@@ -115,7 +115,9 @@ module Fusuma
             end
 
             it 'should exit' do
-              expect { @executor.search_command(@event) }.to raise_error(SystemExit)
+              expect do
+                @executor.executable?(@event)
+              end.to raise_error(SystemExit)
             end
           end
         end
