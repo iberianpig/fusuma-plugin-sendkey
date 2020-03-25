@@ -20,7 +20,7 @@ end
 opt.parse!(ARGV)
 
 if option[:list]
-  puts Fusuma::Plugin::Sendkey::Keyboard.new.search_codes
+  puts Fusuma::Plugin::Sendkey::Keyboard.new(name_pattern: nil).search_codes
   return
 end
 

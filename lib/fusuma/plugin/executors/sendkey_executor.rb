@@ -9,7 +9,7 @@ module Fusuma
       class SendkeyExecutor < Executor
         def config_param_types
           {
-            'device_path': String
+            'device_name': String
           }
         end
 
@@ -39,8 +39,8 @@ module Fusuma
 
         def keyboard
           @keyboard ||= begin
-                          device = Sendkey::Device.new(path: config_params(:device_path))
-                          Sendkey::Keyboard.new(device: device)
+                          name_pattren = config_params(:device_name)
+                          Sendkey::Keyboard.new(name_pattern: name_pattren)
                         end
         end
 

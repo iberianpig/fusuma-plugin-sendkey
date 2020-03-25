@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['iberianpig']
   spec.email         = ['yhkyky@gmail.com']
 
-  spec.summary       = 'Fusuma plugin that sending virtual keyboard events'
-  spec.description   = 'Fusuma::Plugin::Sendkey emulate keyboard events with evemu-event'
+  spec.summary       = 'Fusuma plugin to send keyboard events'
+  spec.description   = 'Fusuma::Plugin::Sendkey emulate keyboard events with evdev'
   spec.homepage      = 'https://github.com/iberianpig/fusuma-plugin-sendkey'
   spec.license       = 'MIT'
 
@@ -24,9 +24,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'evdev', '~> 1.0'
-  spec.add_dependency 'fusuma', '~> 1.5'
-  spec.add_dependency 'linux_input', '~> 1.1'
+  spec.add_dependency 'fusuma', '~> 1.7'
+  spec.add_dependency 'revdev'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'github_changelog_generator', '~> 1.14'

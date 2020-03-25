@@ -13,7 +13,6 @@ module Fusuma
     module Executors
       RSpec.describe SendkeyExecutor do
         around do |example|
-          @dummy_device_path = Tempfile.create.path
           ConfigHelper.load_config_yml = <<~CONFIG
             dummy:
               1:
@@ -23,7 +22,7 @@ module Fusuma
             plugin:
               executors:
                 sendkey_executor:
-                  device_path: #{@dummy_device_path}
+                  device_name: dummy
           CONFIG
 
           example.run
@@ -37,11 +36,25 @@ module Fusuma
           @event = Events::Event.new(tag: 'dummy_detector', record: record)
           @executor = SendkeyExecutor.new
 
-          device = Sendkey::Device.new(path: @dummy_device_path)
-          allow(device).to receive(:support?).with('KEY_MODIFIER_CODE').and_return true
-          allow(device).to receive(:support?).with('KEY_KEY_CODE').and_return true
-          allow(device).to receive(:support?).with('KEY_INVALID_CODE').and_return false
-          allow(Sendkey::Device).to receive(:new).with(path: @dummy_device_path).and_return device
+          fusuma_device = double(Fusuma::Device, id: 'eventN')
+
+          allow_any_instance_of(Sendkey::Keyboard).to receive(:find_device)
+            .with(name_pattern: 'dummy').and_return fusuma_device
+
+          device = double(Sendkey::Device)
+
+          allow(Sendkey::Device).to receive(:new)
+            .with(path: "/dev/input/#{fusuma_device.id}")
+            .and_return(device)
+
+          keyboard = Sendkey::Keyboard.new(name_pattern: 'dummy')
+
+          allow(Sendkey::Keyboard).to receive(:new)
+            .with(name_pattern: 'dummy').and_return keyboard
+
+          allow(keyboard).to receive(:support?).with('KEY_MODIFIER_CODE').and_return true
+          allow(keyboard).to receive(:support?).with('KEY_KEY_CODE').and_return true
+          allow(keyboard).to receive(:support?).with('KEY_INVALID_CODE').and_return false
         end
 
         describe '#execute' do
@@ -83,7 +96,7 @@ module Fusuma
                 plugin:
                   executors:
                     sendkey_executor:
-                      device_path: #{@dummy_device_path}
+                      device_name: dummy
               CONFIG
 
               example.run
@@ -106,18 +119,12 @@ module Fusuma
                 plugin:
                   executors:
                     sendkey_executor:
-                      device_path: #{@dummy_device_path}
+                      device_name: dummy
               CONFIG
 
               example.run
 
               Config.custom_path = nil
-            end
-
-            it 'should exit' do
-              expect do
-                @executor.executable?(@event)
-              end.to raise_error(SystemExit)
             end
           end
         end

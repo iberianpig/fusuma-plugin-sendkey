@@ -1,8 +1,8 @@
 # Fusuma::Plugin::Sendkey [![Gem Version](https://badge.fury.io/rb/fusuma-plugin-sendkey.svg)](https://badge.fury.io/rb/fusuma-plugin-sendkey) [![Build Status](https://travis-ci.com/iberianpig/fusuma-plugin-sendkey.svg?branch=master)](https://travis-ci.com/iberianpig/fusuma-plugin-sendkey)
 
-[Fusuma](https://github.com/iberianpig/fusuma) plugin that sending virtual keyboard events
+[Fusuma](https://github.com/iberianpig/fusuma) plugin to send keyboard events
 
-* Send keyboard events with writing event /dev/input/eventN
+* Emulate keyboard events with evdev
 * This plugin is wayland compatible and alternative to xdotool
 
 ## Installation
@@ -12,7 +12,7 @@ Run the following code in your terminal.
 ### Install dependencies
 
 ```sh
-$ sudo apt-get install libevdev-dev ruby-ffi
+$ sudo apt-get install libevdev-dev
 ```
 
 ### Install fusuma-plugin-sendkey

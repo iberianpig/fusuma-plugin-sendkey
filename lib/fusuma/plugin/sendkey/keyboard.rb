@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require 'linux_input'
-require 'fcntl'
+require 'revdev'
+require 'fusuma/device'
+
 require_relative './device.rb'
 
 module Fusuma
@@ -9,9 +10,19 @@ module Fusuma
     module Sendkey
       # Emulate Keyboard
       class Keyboard
-        def initialize(device: nil)
-          @device = device || Device.new
+        def initialize(name_pattern: nil)
+          name_pattern ||= 'keyboard'
+          device = find_device(name_pattern: name_pattern)
+
+          if device.nil?
+            warn "sendkey: Keyboard /#{name_pattern}/ is not found"
+            exit(1)
+          end
+
+          @device = Device.new(path: "/dev/input/#{device.id}")
         end
+
+        attr_writer :device
 
         # @param param [String]
         def type(param:)
@@ -24,7 +35,6 @@ module Fusuma
           key_sync(press: true)
           keycodes.reverse.map { |keycode| key_event(keycode: keycode, press: false) }
           key_sync(press: false)
-          device_file.close
         end
 
         # @param param [String]
@@ -35,55 +45,54 @@ module Fusuma
           keycodes.all? { |keycode| support?(keycode) }
         end
 
-        def device_file
-          return @device_file if @device_file && !@device_file.closed?
-
-          @device_file = File.open(@device.path, Fcntl::O_WRONLY | Fcntl::O_NDELAY)
-        end
-
         def key_event(keycode:, press: true)
-          event = LinuxInput::InputEvent.new
-          event[:time] = LinuxInput::Timeval.new
-          event[:time][:tv_sec] = Time.now.to_i
-          event[:type] = LinuxInput::EV_KEY
-          event[:code] = keycode_const(keycode)
-          event[:value] = press ? 1 : 0
-          device_file.syswrite(event.pointer.read_bytes(event.size))
+          event = Revdev::InputEvent.new(
+            nil,
+            Revdev.const_get(:EV_KEY),
+            Revdev.const_get(keycode),
+            press ? 1 : 0
+          )
+          @device.write_event(event)
         end
 
         def key_sync(press: true)
-          event = LinuxInput::InputEvent.new
-          event[:time] = LinuxInput::Timeval.new
-          event[:time][:tv_sec] = Time.now.to_i
-          event[:type] = LinuxInput::EV_SYN
-          event[:code] = LinuxInput::SYN_REPORT
-          event[:value] = press ? 1 : 0
-          device_file.syswrite(event.pointer.read_bytes(event.size))
+          event = Revdev::InputEvent.new(
+            nil,
+            Revdev.const_get(:EV_SYN),
+            Revdev.const_get(:SYN_REPORT),
+            press ? 1 : 0
+          )
+          @device.write_event(event)
         end
 
         def support?(keycode)
           @supported_code ||= {}
-          @supported_code[keycode] ||= if @device.support?(keycode)
+          @supported_code[keycode] ||= if find_code(keycode: keycode)
                                          true
                                        else
                                          search_candidates(keycode: keycode)
-                                         exit(1)
                                        end
         end
 
         def search_candidates(keycode:)
-          candidates = search_codes(keycode: keycode)
+          query = keycode&.upcase&.gsub('KEY_', '')
+
+          candidates = search_codes(query: query)
 
           warn "Did you mean? #{candidates.join(' / ')}" unless candidates.empty?
           warn "sendkey: #{remove_prefix(keycode)} is unsupported."
         end
 
-        def search_codes(keycode: nil)
+        def search_codes(query: nil)
+          Revdev.constants
+                .select { |c| c[/KEY_.*#{query}.*/] }
+                .map { |c| c.to_s.gsub('KEY_', '') }
+        end
+
+        def find_code(keycode: nil)
           query = keycode&.upcase&.gsub('KEY_', '')
-          LinuxInput.constants
-                    .select { |c| c[/KEY_.*#{query}.*/] }
-                    .select { |c| @device.support?(c) }
-                    .map { |c| c.to_s.gsub('KEY_', '') }
+
+          Revdev.constants.find { |c| c == "KEY_#{query}".to_sym }
         end
 
         def keycode_const(keycode)
@@ -97,6 +106,10 @@ module Fusuma
         end
 
         private
+
+        def find_device(name_pattern:)
+          Fusuma::Device.all.find { |d| d.name.match(/#{name_pattern}/) }
+        end
 
         def split_param(param)
           param.split('+').map { |code| key_prefix(code) }
