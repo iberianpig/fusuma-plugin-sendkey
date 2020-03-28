@@ -12,7 +12,7 @@ Run the following code in your terminal.
 ### Install dependencies
 
 ```sh
-$ sudo apt-get install libevdev-dev
+$ sudo apt-get install libevdev-dev ruby-dev
 ```
 
 ### Install fusuma-plugin-sendkey
