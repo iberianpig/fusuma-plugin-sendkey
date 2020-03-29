@@ -2,8 +2,8 @@
 
 [Fusuma](https://github.com/iberianpig/fusuma) plugin to send keyboard events
 
-* Emulate keyboard events with evdev
-* This plugin is wayland compatible and alternative to xdotool
+* Low-latency key event emulation with evdev
+* Alternative to xdotool available for X11 and Wayland
 
 ## Installation
 
@@ -11,6 +11,7 @@ Run the following code in your terminal.
 
 ### Install dependencies
 
+**NOTE: If you have installed ruby by apt, you must install ruby-dev.**
 ```sh
 $ sudo apt-get install libevdev-dev ruby-dev
 ```
@@ -27,17 +28,27 @@ $ sudo gem install fusuma-plugin-sendkey
 ```sh
 $ fusuma-sendkey -l
 ```
+If you want to look up a specific key, like the next song or the previous song, the `grep -i` refinement search is useful.
+
+```sh
+$ fusuma-sendkey -l | grep -i song
+NEXTSONG
+PREVIOUSSONG
+```
 
 ## Run fusuma-sendkey on Terminal
 
 * `fusuma-sendkey` command is available on your terminal
-* `fusuma-sendkey` can send multiple key events
-* Combine keys for pressing the same time with `+` 
+* `fusuma-sendkey` supports modifier keys and multiple key presses.
+Combine keys for pressing the same time with `+` 
 
 
 ```sh
 $ fusuma-sendkey LEFTCTRL+T # press ctrl key + t key
 ```
+
+Some of the keys found with `fusuma-sendkey -l` may actually be invalid keys.
+So test it once with `fusuma-sendkey <KEYCODE>` and then add it to config.yml.
 
 
 ## Add sendkey properties to config.yml
