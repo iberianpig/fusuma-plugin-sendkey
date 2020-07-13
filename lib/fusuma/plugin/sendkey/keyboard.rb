@@ -10,19 +10,18 @@ module Fusuma
     module Sendkey
       # Emulate Keyboard
       class Keyboard
-        def initialize(name_pattern: nil)
-          name_pattern ||= 'keyboard'
+        def initialize(name_pattern: 'keyboard|Keyboard|KEYBOARD')
           device = find_device(name_pattern: name_pattern)
 
           if device.nil?
-            warn "sendkey: Keyboard /#{name_pattern}/ is not found"
+            warn "sendkey: Keyboard: /#{name_pattern}/ is not found"
             exit(1)
           end
 
           @device = Device.new(path: "/dev/input/#{device.id}")
         end
 
-        attr_writer :device
+        attr_reader :device
 
         # @param param [String]
         def type(param:)
