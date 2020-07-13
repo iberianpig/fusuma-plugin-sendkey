@@ -11,3 +11,10 @@ Metrics/LineLength:
   Max: 100
   Exclude:
     - "fusuma-plugin-*.gemspec"
+
+Style/HashEachMethods:
+  Enabled: true
+Style/HashTransformKeys:
+  Enabled: true
+Style/HashTransformValues:
+  Enabled: true

@@ -70,6 +70,26 @@ swipe:
       sendkey: "LEFTCTRL+W" # close tab
 ```
 
+
+### Specify keyboard by device name
+
+If you got following error message, try to set your keyboard name to `plugin.executors.sendkey_executor.device_name` on config.yml
+
+```shell
+$ fusuma-sendkey -l
+sendkey: Keyboard: /keyboard|Keyboard|KEYBOARD/ is not found
+```
+
+Set the following options to recognize keyboard only for the specified keyboard device.
+Open `~/.config/fusuma/config.yml` and add the following code at the bottom.
+
+```yaml
+plugin:
+  executors:
+    sendkey_executor:
+      device_name: 'YOUR KEYBOARD NAME'
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/iberianpig/fusuma-plugin-sendkey. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
