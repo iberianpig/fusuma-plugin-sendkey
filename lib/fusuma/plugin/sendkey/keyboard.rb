@@ -10,7 +10,8 @@ module Fusuma
     module Sendkey
       # Emulate Keyboard
       class Keyboard
-        def initialize(name_pattern: 'keyboard|Keyboard|KEYBOARD')
+        def initialize(name_pattern: nil)
+          name_pattern ||= 'keyboard|Keyboard|KEYBOARD'
           device = find_device(name_pattern: name_pattern)
 
           if device.nil?

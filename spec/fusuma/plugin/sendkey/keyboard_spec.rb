@@ -78,6 +78,61 @@ module Fusuma
               expect { Keyboard.new(name_pattern: 'Awesome KEY/BOARD') }.not_to raise_error
             end
           end
+
+          context 'not given name pattern (use default)' do
+            subject { -> { Keyboard.new(name_pattern: nil) } }
+            before do
+              allow(Sendkey::Device).to receive(:new).and_return('dummy')
+            end
+
+            context 'exist device named keyboard' do
+              before do
+                specified_device = Fusuma::Device.new(
+                  name: 'keyboard',
+                  id: 'dummy'
+                )
+                allow(Fusuma::Device).to receive(:all).and_return([specified_device])
+              end
+
+              it { is_expected.not_to raise_error }
+            end
+
+            context 'exist device named Keyboard' do
+              before do
+                specified_device = Fusuma::Device.new(
+                  name: 'Keyboard',
+                  id: 'dummy'
+                )
+                allow(Fusuma::Device).to receive(:all).and_return([specified_device])
+              end
+
+              it { is_expected.not_to raise_error }
+            end
+
+            context 'exist device named KEYBOARD' do
+              before do
+                specified_device = Fusuma::Device.new(
+                  name: 'KEYBOARD',
+                  id: 'dummy'
+                )
+                allow(Fusuma::Device).to receive(:all).and_return([specified_device])
+              end
+
+              it { is_expected.not_to raise_error }
+            end
+
+            context 'exist no device named keyboard|Keyboard|KEYBOARD' do
+              before do
+                specified_device = Fusuma::Device.new(
+                  name: 'KEY-BOARD',
+                  id: 'dummy'
+                )
+                allow(Fusuma::Device).to receive(:all).and_return([specified_device])
+              end
+
+              it { is_expected.to raise_error(SystemExit) }
+            end
+          end
         end
       end
     end
