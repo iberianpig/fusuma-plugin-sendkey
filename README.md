@@ -13,7 +13,7 @@ Run the following code in your terminal.
 
 **NOTE: If you have installed ruby by apt, you must install ruby-dev.**
 ```sh
-$ sudo apt-get install libevdev-dev ruby-dev
+$ sudo apt-get install libevdev-dev ruby-dev build-essential
 ```
 
 ### Install fusuma-plugin-sendkey
