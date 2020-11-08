@@ -151,9 +151,9 @@ module Fusuma
           end
 
           it 'should press key KEY_A and release KEY_A' do
-            expect(@keyboard).to receive(:clear_modifiers)
-            expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true)
-            expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false)
+            expect(@keyboard).to receive(:clear_modifiers).ordered
+            expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
+            expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false).ordered
             @keyboard.type(param: 'A')
           end
 
@@ -163,11 +163,11 @@ module Fusuma
             end
 
             it 'should type AB' do
-              expect(@keyboard).to receive(:clear_modifiers)
+              expect(@keyboard).to receive(:clear_modifiers).ordered
               expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT', press: true).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true)
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false)
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT', press: false)
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false).ordered
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT', press: false).ordered
               @keyboard.type(param: @keys)
             end
           end
@@ -177,11 +177,11 @@ module Fusuma
             end
 
             it 'should type AB' do
-              expect(@keyboard).to receive(:clear_modifiers)
+              expect(@keyboard).to receive(:clear_modifiers).ordered
               expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_B', press: true)
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_B', press: false)
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false)
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_B', press: true).ordered
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_B', press: false).ordered
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false).ordered
               @keyboard.type(param: @keys)
             end
           end
@@ -191,9 +191,9 @@ module Fusuma
               @keypress_keys = 'LEFTSHIFT'
             end
             it 'should type A (without LEFTSHIFT key pressing by user)' do
-              expect(@keyboard).to receive(:clear_modifiers)
+              expect(@keyboard).to receive(:clear_modifiers).ordered
               expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false)
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false).ordered
               @keyboard.type(param: @keys, keep: @keypress_keys)
             end
           end
