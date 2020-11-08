@@ -134,6 +134,70 @@ module Fusuma
             end
           end
         end
+
+        describe '#type' do
+          before do
+            allow_any_instance_of(Sendkey::Keyboard)
+              .to receive(:find_device)
+              .and_return(Fusuma::Device.new(name: 'dummy keyboard'))
+
+            @device = double(Sendkey::Device)
+            allow(@device).to receive(:write_event).with(anything)
+            # allow(@device).to receive(:valid?).with(param: 'KEY_A')
+
+            allow(Sendkey::Device).to receive(:new).and_return(@device)
+
+            @keyboard = Keyboard.new
+          end
+
+          it 'should press key KEY_A and release KEY_A' do
+            expect(@keyboard).to receive(:clear_modifiers)
+            expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true)
+            expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false)
+            @keyboard.type(param: 'A')
+          end
+
+          context 'with modifier keys' do
+            before do
+              @keys = 'LEFTSHIFT+A'
+            end
+
+            it 'should type AB' do
+              expect(@keyboard).to receive(:clear_modifiers)
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT', press: true).ordered
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true)
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false)
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT', press: false)
+              @keyboard.type(param: @keys)
+            end
+          end
+          context 'with multiple keys' do
+            before do
+              @keys = 'A+B'
+            end
+
+            it 'should type AB' do
+              expect(@keyboard).to receive(:clear_modifiers)
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_B', press: true)
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_B', press: false)
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false)
+              @keyboard.type(param: @keys)
+            end
+          end
+          context 'with keypress' do
+            before do
+              @keys = 'LEFTSHIFT+A'
+              @keypress_keys = 'LEFTSHIFT'
+            end
+            it 'should type A (without LEFTSHIFT key pressing by user)' do
+              expect(@keyboard).to receive(:clear_modifiers)
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false)
+              @keyboard.type(param: @keys, keep: @keypress_keys)
+            end
+          end
+        end
       end
     end
   end

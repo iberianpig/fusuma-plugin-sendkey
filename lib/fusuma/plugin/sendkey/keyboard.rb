@@ -25,12 +25,14 @@ module Fusuma
         attr_reader :device
 
         # @param param [String]
-        def type(param:)
+        # @param keep [String]
+        def type(param:, keep: '')
           return unless param.is_a?(String)
 
-          keycodes = split_param(param)
+          keep_keycodes = split_param(keep)
+          keycodes = split_param(param) - keep_keycodes
 
-          clear_modifiers
+          clear_modifiers(keep_keycodes)
           keycodes.each { |keycode| key_event(keycode: keycode, press: true) }
           key_sync(press: true)
           keycodes.reverse.map { |keycode| key_event(keycode: keycode, press: false) }
@@ -99,10 +101,11 @@ module Fusuma
           Object.const_get "LinuxInput::#{keycode}"
         end
 
-        def clear_modifiers
+        def clear_modifiers(keycodes)
           modifiers = %w[ CAPSLOCK LEFTALT LEFTCTRL LEFTMETA
                           LEFTSHIFT RIGHTALT RIGHTCTRL RIGHTSHIFT ]
-          modifiers.each { |code| key_event(keycode: key_prefix(code), press: false) }
+                      .map { |code| key_prefix(code) }
+          (modifiers - keycodes).each { |code| key_event(keycode: code, press: false) }
         end
 
         private

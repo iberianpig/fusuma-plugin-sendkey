@@ -18,6 +18,9 @@ module Fusuma
               1:
                 direction:
                   sendkey: KEY_CODE
+                  keypress:
+                    LEFTSHIFT:
+                      sendkey: KEY_CODE_WITH_KEYPRESS
 
             plugin:
               executors:
@@ -36,45 +39,59 @@ module Fusuma
           @event = Events::Event.new(tag: 'dummy_detector', record: record)
           @executor = SendkeyExecutor.new
 
-          fusuma_device = double(Fusuma::Device, id: 'eventN')
+          @keyboard = double(Sendkey::Keyboard)
 
-          allow_any_instance_of(Sendkey::Keyboard).to receive(:find_device)
-            .with(name_pattern: 'dummy').and_return fusuma_device
-
-          device = double(Sendkey::Device)
-
-          allow(Sendkey::Device).to receive(:new)
-            .with(path: "/dev/input/#{fusuma_device.id}")
-            .and_return(device)
-
-          keyboard = Sendkey::Keyboard.new(name_pattern: 'dummy')
-
-          allow(Sendkey::Keyboard).to receive(:new)
-            .with(name_pattern: 'dummy').and_return keyboard
-
-          allow(keyboard).to receive(:support?).with('KEY_MODIFIER_CODE').and_return true
-          allow(keyboard).to receive(:support?).with('KEY_KEY_CODE').and_return true
-          allow(keyboard).to receive(:support?).with('KEY_INVALID_CODE').and_return false
+          allow(@executor).to receive(:keyboard).and_return @keyboard
         end
 
         describe '#execute' do
-          it 'fork' do
+          before do
             allow(Process).to receive(:daemon).with(true)
             allow(Process).to receive(:detach).with(anything)
-
+          end
+          it 'fork' do
             expect(@executor).to receive(:fork).and_yield do |block_context|
-              allow(block_context).to receive(:search_param).with(@event)
-
-              keyboard = double(Sendkey::Keyboard)
-              allow(block_context).to receive(:keyboard).and_return(keyboard)
-              allow(keyboard).to receive(:type).with(anything)
+              expect(block_context).to receive(:_execute).with(@event)
             end
 
             @executor.execute(@event)
           end
         end
 
+        describe '#_execute' do
+          after do
+            @executor._execute(@event)
+          end
+          it 'send KEY_CODE message to keybard' do
+            expect(@executor).to receive(:search_param).with(@event).and_return('KEY_CODE')
+            expect(@executor).to receive(:search_keypress).with(@event).and_return(nil)
+            expect(@keyboard).to receive(:type).with(param: 'KEY_CODE', keep: nil)
+          end
+
+          context 'with keypress' do
+            before do
+              index_with_keypress = Config::Index.new(
+                [:dummy, 1, :direction, :keypress, :LEFTSHIFT]
+              )
+              record = Events::Records::IndexRecord.new(index: index_with_keypress)
+              @event = Events::Event.new(tag: 'dummy_detector', record: record)
+            end
+            it 'send KEY_CODE_WITH_KEYPRESS message to keybard' do
+              expect(@keyboard).to receive(:type)
+                .with(param: 'KEY_CODE_WITH_KEYPRESS', keep: "LEFTSHIFT")
+            end
+          end
+        end
+
         describe '#executable?' do
+          before do
+            allow(@keyboard).to receive(:valid?).with(param: 'MODIFIER_CODE+KEY_CODE')
+                                                .and_return true
+            allow(@keyboard).to receive(:valid?).with(param: 'KEY_CODE')
+                                                .and_return true
+            allow(@keyboard).to receive(:valid?).with(param: 'INVALID_CODE')
+                                                .and_return false
+          end
           context 'when given valid event tagged as xxxx_detector' do
             it { expect(@executor.executable?(@event)).to be_truthy }
           end

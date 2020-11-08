@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'fusuma/plugin/inputs/libinput_command_input.rb'
 require_relative '../lib/fusuma/plugin/sendkey/keyboard.rb'
 require_relative '../lib/fusuma/plugin/sendkey/version.rb'
 
