@@ -3,7 +3,7 @@
 require 'revdev'
 require 'fusuma/device'
 
-require_relative './device.rb'
+require_relative './device'
 
 module Fusuma
   module Plugin

@@ -78,7 +78,7 @@ module Fusuma
             end
             it 'send KEY_CODE_WITH_KEYPRESS message to keybard' do
               expect(@keyboard).to receive(:type)
-                .with(param: 'KEY_CODE_WITH_KEYPRESS', keep: "LEFTSHIFT")
+                .with(param: 'KEY_CODE_WITH_KEYPRESS', keep: 'LEFTSHIFT')
             end
           end
         end
@@ -122,7 +122,7 @@ module Fusuma
             end
 
             it 'should return true' do
-              expect(@executor.executable?(@event)) .to be_truthy
+              expect(@executor.executable?(@event)).to be_truthy
             end
           end
 

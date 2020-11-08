@@ -1,3 +1,11 @@
+AllCops:
+  TargetRubyVersion: 2.4
+  NewCops: enable
+  Layout/BeginEndAlignment:
+    Enabled: true
+  Layout/EmptyLinesAroundAttributeAccessor:
+    Enabled: true
+
 Metrics/ModuleLength:
   Exclude:
     - "**/*_spec.rb"
@@ -7,9 +15,10 @@ Metrics/BlockLength:
     - "**/*_spec.rb"
     - "fusuma-plugin-*.gemspec"
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 100
   Exclude:
+    - "**/*_spec.rb"
     - "fusuma-plugin-*.gemspec"
 
 Style/HashEachMethods:

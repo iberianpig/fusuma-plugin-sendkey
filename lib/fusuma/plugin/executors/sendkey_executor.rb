@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../sendkey/keyboard.rb'
+require_relative '../sendkey/keyboard'
 
 module Fusuma
   module Plugin
@@ -49,9 +49,9 @@ module Fusuma
 
         def keyboard
           @keyboard ||= begin
-                          name_pattren = config_params(:device_name)
-                          Sendkey::Keyboard.new(name_pattern: name_pattren)
-                        end
+            name_pattren = config_params(:device_name)
+            Sendkey::Keyboard.new(name_pattern: name_pattren)
+          end
         end
 
         def search_param(event)
