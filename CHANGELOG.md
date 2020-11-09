@@ -1,8 +1,16 @@
 # Changelog
 
-## [Unreleased](https://github.com/iberianpig/fusuma-plugin-keypress/tree/HEAD)
+## [v0.2.1](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.2.1) (2020-04-15)
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.1.1...HEAD)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.2.0...v0.2.1)
+
+**Closed issues:**
+
+- Only 'LEFTMETA' keycode works on KDE Plasma [\#2](https://github.com/iberianpig/fusuma-plugin-keypress/issues/2)
+
+## [v0.2.0](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.2.0) (2020-03-18)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.1.1...v0.2.0)
 
 **Closed issues:**
 
