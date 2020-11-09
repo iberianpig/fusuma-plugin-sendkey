@@ -1,10 +1,6 @@
 AllCops:
   TargetRubyVersion: 2.4
   NewCops: enable
-  Layout/BeginEndAlignment:
-    Enabled: true
-  Layout/EmptyLinesAroundAttributeAccessor:
-    Enabled: true
 
 Metrics/ModuleLength:
   Exclude:
