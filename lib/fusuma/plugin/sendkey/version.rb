@@ -3,7 +3,7 @@
 module Fusuma
   module Plugin
     module Sendkey
-      VERSION = '0.5.1'
+      VERSION = '0.6.0.pre'
     end
   end
 end
