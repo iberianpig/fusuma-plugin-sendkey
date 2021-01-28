@@ -9,14 +9,22 @@
 
 Run the following code in your terminal.
 
-### Install dependencies
+### 1. Install dependencies
+
+#### For Debian Based Distros (Ubuntu, Debian, Mint, Pop!_OS)
 
 **NOTE: If you have installed ruby by apt, you must install ruby-dev.**
 ```sh
 $ sudo apt-get install libevdev-dev ruby-dev build-essential
 ```
 
-### Install fusuma-plugin-sendkey
+#### For Arch Based Distros (Manjaro, Arch)
+
+```zsh
+$ sudo pacman -S libevdev base-devel
+```
+
+### 2. Install fusuma-plugin-sendkey
 
 ```sh
 $ sudo gem install fusuma-plugin-sendkey
