@@ -9,19 +9,32 @@
 
 Run the following code in your terminal.
 
-### Install dependencies
+### 1. Install dependencies
+
+#### For Debian Based Distros (Ubuntu, Debian, Mint, Pop!_OS)
 
 **NOTE: If you have installed ruby by apt, you must install ruby-dev.**
 ```sh
 $ sudo apt-get install libevdev-dev ruby-dev build-essential
 ```
 
-### Install fusuma-plugin-sendkey
+#### For Arch Based Distros (Manjaro, Arch)
+
+```zsh
+$ sudo pacman -S libevdev base-devel
+```
+
+### 2. Install fusuma-plugin-sendkey
+
+
+**Note For Arch Based Distros:** By default in Arch Linux, when running ```gem```, gems are installed per-user (into ```~/.gem/ruby/```), instead of system-wide (into ```/usr/lib/ruby/gems/```). This is considered the best way to manage gems on Arch, because otherwise they might interfere with gems installed by Pacman. (From Arch Wiki)
+
+To install gems system-wide, see any of the methods listed on [Arch Wiki](https://wiki.archlinux.org/index.php/ruby#Installing_gems_system-wide)
+
 
 ```sh
 $ sudo gem install fusuma-plugin-sendkey
 ```
-
 
 ## List available keys
 
