@@ -33,6 +33,8 @@ To install gems system-wide, see any of the methods listed on [Arch Wiki](https:
 
 
 ```sh
+$ sudo gem install revdev
+$ sudo gem install bundler
 $ sudo gem install fusuma-plugin-sendkey
 ```
 
