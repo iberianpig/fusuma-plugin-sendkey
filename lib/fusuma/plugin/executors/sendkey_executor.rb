@@ -7,9 +7,13 @@ module Fusuma
     module Executors
       # Control Window or Workspaces by executing wctrl
       class SendkeyExecutor < Executor
+        def execute_keys
+          [:sendkey]
+        end
+
         def config_param_types
           {
-            'device_name': String
+            device_name: String
           }
         end
 
