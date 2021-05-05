@@ -10,6 +10,18 @@ module Fusuma
     module Sendkey
       # Emulate Keyboard
       class Keyboard
+        MODIFIER_KEY_CODES = %w[
+          KEY_CAPSLOCK
+          KEY_LEFTALT
+          KEY_LEFTCTRL
+          KEY_LEFTMETA
+          KEY_LEFTSHIFT
+          KEY_RIGHTALT
+          KEY_RIGHTCTRL
+          KEY_RIGHTSHIFT
+          KEY_RIGHTMETA
+        ].freeze
+
         def initialize(name_pattern: nil)
           name_pattern ||= 'keyboard|Keyboard|KEYBOARD'
           device = find_device(name_pattern: name_pattern)
@@ -101,11 +113,9 @@ module Fusuma
           Object.const_get "LinuxInput::#{keycode}"
         end
 
-        def clear_modifiers(keycodes)
-          modifiers = %w[ CAPSLOCK LEFTALT LEFTCTRL LEFTMETA
-                          LEFTSHIFT RIGHTALT RIGHTCTRL RIGHTSHIFT ]
-                      .map { |code| key_prefix(code) }
-          (modifiers - keycodes).each { |code| key_event(keycode: code, press: false) }
+        # @param exclude [Array<String>] keys to be excluded from keys releasing before sending. Default is [].
+        def clear_modifiers(exclude: [])
+          (MODIFIER_KEY_CODES - exclude).each { |code| key_event(keycode: code, press: false) }
         end
 
         private
