@@ -18,9 +18,6 @@ module Fusuma
               1:
                 direction:
                   sendkey: KEY_CODE
-                  keypress:
-                    LEFTSHIFT:
-                      sendkey: KEY_CODE_WITH_KEYPRESS
 
             plugin:
               executors:
@@ -64,22 +61,7 @@ module Fusuma
           end
           it 'send KEY_CODE message to keybard' do
             expect(@executor).to receive(:search_param).with(@event).and_return('KEY_CODE')
-            expect(@executor).to receive(:search_keypress).with(@event).and_return(nil)
-            expect(@keyboard).to receive(:type).with(param: 'KEY_CODE', keep: nil)
-          end
-
-          context 'with keypress' do
-            before do
-              index_with_keypress = Config::Index.new(
-                [:dummy, 1, :direction, :keypress, :LEFTSHIFT]
-              )
-              record = Events::Records::IndexRecord.new(index: index_with_keypress)
-              @event = Events::Event.new(tag: 'dummy_detector', record: record)
-            end
-            it 'send KEY_CODE_WITH_KEYPRESS message to keybard' do
-              expect(@keyboard).to receive(:type)
-                .with(param: 'KEY_CODE_WITH_KEYPRESS', keep: 'LEFTSHIFT')
-            end
+            expect(@keyboard).to receive(:type).with(param: 'KEY_CODE')
           end
         end
 

@@ -38,16 +38,14 @@ module Fusuma
 
         # @param param [String]
         # @param keep [String]
-        def type(param:, keep: '')
+        def type(param:)
           return unless param.is_a?(String)
 
-          keep_keycodes = split_param(keep)
-          keycodes = split_param(param) - keep_keycodes
-
-          clear_modifiers(keep_keycodes)
-          keycodes.each { |keycode| key_event(keycode: keycode, press: true) }
+          param_keycodes = split_param(param)
+          clear_modifiers(MODIFIER_KEY_CODES - param_keycodes)
+          param_keycodes.each { |keycode| key_event(keycode: keycode, press: true) }
           key_sync(press: true)
-          keycodes.reverse.map { |keycode| key_event(keycode: keycode, press: false) }
+          param_keycodes.reverse.each { |keycode| key_event(keycode: keycode, press: false) }
           key_sync(press: false)
         end
 
@@ -113,9 +111,9 @@ module Fusuma
           Object.const_get "LinuxInput::#{keycode}"
         end
 
-        # @param exclude [Array<String>] keys to be excluded from keys releasing before sending. Default is [].
-        def clear_modifiers(exclude: [])
-          (MODIFIER_KEY_CODES - exclude).each { |code| key_event(keycode: code, press: false) }
+        # @param [Array<String>] keycodes to be released
+        def clear_modifiers(keycodes)
+          keycodes.each { |code| key_event(keycode: code, press: false) }
         end
 
         private
