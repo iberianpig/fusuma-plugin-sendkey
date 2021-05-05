@@ -10,6 +10,18 @@ module Fusuma
     module Sendkey
       # Emulate Keyboard
       class Keyboard
+        MODIFIER_KEY_CODES = %w[
+          KEY_CAPSLOCK
+          KEY_LEFTALT
+          KEY_LEFTCTRL
+          KEY_LEFTMETA
+          KEY_LEFTSHIFT
+          KEY_RIGHTALT
+          KEY_RIGHTCTRL
+          KEY_RIGHTSHIFT
+          KEY_RIGHTMETA
+        ].freeze
+
         def initialize(name_pattern: nil)
           name_pattern ||= 'keyboard|Keyboard|KEYBOARD'
           device = find_device(name_pattern: name_pattern)
@@ -26,16 +38,14 @@ module Fusuma
 
         # @param param [String]
         # @param keep [String]
-        def type(param:, keep: '')
+        def type(param:)
           return unless param.is_a?(String)
 
-          keep_keycodes = split_param(keep)
-          keycodes = split_param(param) - keep_keycodes
-
-          clear_modifiers(keep_keycodes)
-          keycodes.each { |keycode| key_event(keycode: keycode, press: true) }
+          param_keycodes = split_param(param)
+          clear_modifiers(MODIFIER_KEY_CODES - param_keycodes)
+          param_keycodes.each { |keycode| key_event(keycode: keycode, press: true) }
           key_sync(press: true)
-          keycodes.reverse.map { |keycode| key_event(keycode: keycode, press: false) }
+          param_keycodes.reverse.each { |keycode| key_event(keycode: keycode, press: false) }
           key_sync(press: false)
         end
 
@@ -101,11 +111,9 @@ module Fusuma
           Object.const_get "LinuxInput::#{keycode}"
         end
 
+        # @param [Array<String>] keycodes to be released
         def clear_modifiers(keycodes)
-          modifiers = %w[ CAPSLOCK LEFTALT LEFTCTRL LEFTMETA
-                          LEFTSHIFT RIGHTALT RIGHTCTRL RIGHTSHIFT ]
-                      .map { |code| key_prefix(code) }
-          (modifiers - keycodes).each { |code| key_event(keycode: code, press: false) }
+          keycodes.each { |code| key_event(keycode: code, press: false) }
         end
 
         private

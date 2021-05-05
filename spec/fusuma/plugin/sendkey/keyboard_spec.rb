@@ -162,15 +162,23 @@ module Fusuma
               @keys = 'LEFTSHIFT+A'
             end
 
-            it 'should type AB' do
+            it 'clear all modifier keys except parameter of sendkey' do
+              expect(@keyboard).to receive(:clear_modifiers).with(Keyboard::MODIFIER_KEY_CODES - ['KEY_LEFTSHIFT']).ordered
+              @keyboard.type(param: @keys)
+            end
+
+            it 'types (Shift)A' do
               expect(@keyboard).to receive(:clear_modifiers).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT', press: true).ordered
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT',
+                                                            press: true).ordered
               expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
               expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT', press: false).ordered
+              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT',
+                                                            press: false).ordered
               @keyboard.type(param: @keys)
             end
           end
+
           context 'with multiple keys' do
             before do
               @keys = 'A+B'
@@ -183,18 +191,6 @@ module Fusuma
               expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_B', press: false).ordered
               expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false).ordered
               @keyboard.type(param: @keys)
-            end
-          end
-          context 'with keypress' do
-            before do
-              @keys = 'LEFTSHIFT+A'
-              @keypress_keys = 'LEFTSHIFT'
-            end
-            it 'should type A (without LEFTSHIFT key pressing by user)' do
-              expect(@keyboard).to receive(:clear_modifiers).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false).ordered
-              @keyboard.type(param: @keys, keep: @keypress_keys)
             end
           end
         end
