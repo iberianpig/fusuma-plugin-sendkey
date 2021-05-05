@@ -22,9 +22,13 @@ module Fusuma
           KEY_RIGHTMETA
         ].freeze
 
+        def self.find_device(name_pattern:)
+          Fusuma::Device.all.find { |d| d.name.match(/#{name_pattern}/) }
+        end
+
         def initialize(name_pattern: nil)
           name_pattern ||= 'keyboard|Keyboard|KEYBOARD'
-          device = find_device(name_pattern: name_pattern)
+          device = Keyboard.find_device(name_pattern: name_pattern)
 
           if device.nil?
             warn "sendkey: Keyboard: /#{name_pattern}/ is not found"
@@ -117,10 +121,6 @@ module Fusuma
         end
 
         private
-
-        def find_device(name_pattern:)
-          Fusuma::Device.all.find { |d| d.name.match(/#{name_pattern}/) }
-        end
 
         def split_param(param)
           param.split('+').map { |code| key_prefix(code) }

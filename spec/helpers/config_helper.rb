@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'tempfile'
-require 'fusuma/config.rb'
+require 'fusuma/config'
 
 module Fusuma
   module ConfigHelper

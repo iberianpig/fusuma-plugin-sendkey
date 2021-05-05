@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'helpers/config_helper.rb'
+require 'helpers/config_helper'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
