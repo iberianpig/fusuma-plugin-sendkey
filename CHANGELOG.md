@@ -1,57 +1,99 @@
 # Changelog
 
-## [0.6.3](https://github.com/iberianpig/fusuma-plugin-keypress/tree/0.6.3) (2021-10-03)
+## [v0.6.3](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.6.3) (2021-10-03)
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.4.1...0.6.3)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.6.2...v0.6.3)
 
-**Closed issues:**
+## [v0.6.2](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.6.2) (2021-05-05)
 
-- Key combinations sometimes do not work in Ubuntu 21.04 [\#5](https://github.com/iberianpig/fusuma-plugin-keypress/issues/5)
-- It doesn't work on Debian Gnome [\#4](https://github.com/iberianpig/fusuma-plugin-keypress/issues/4)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.6.1...v0.6.2)
 
-## [v0.4.1](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.4.1) (2021-04-13)
+**Fixed bugs:**
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.4.0...v0.4.1)
+- Exclude modifier keys used in Sendkey from clear\_modifiers [\#20](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/20)
 
-## [v0.4.0](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.4.0) (2021-04-12)
+**Merged pull requests:**
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.4.0.pre2...v0.4.0)
+- Exclude sendkey's parameter from Keyboard\#clear\_modifiers [\#21](https://github.com/iberianpig/fusuma-plugin-sendkey/pull/21) ([iberianpig](https://github.com/iberianpig))
 
-## [v0.4.0.pre2](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.4.0.pre2) (2021-04-01)
+## [v0.6.1](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.6.1) (2021-04-13)
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.4.0.pre...v0.4.0.pre2)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.6.0...v0.6.1)
 
-## [v0.4.0.pre](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.4.0.pre) (2020-11-09)
+## [v0.6.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.6.0) (2021-04-12)
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.3.0...v0.4.0.pre)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.6.0.pre2...v0.6.0)
 
-## [v0.3.0](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.3.0) (2020-11-09)
+## [v0.6.0.pre2](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.6.0.pre2) (2021-03-29)
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.2.1...v0.3.0)
-
-## [v0.2.1](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.2.1) (2020-04-15)
-
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.2.0...v0.2.1)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.6.0.pre...v0.6.0.pre2)
 
 **Closed issues:**
 
-- Only 'LEFTMETA' keycode works on KDE Plasma [\#2](https://github.com/iberianpig/fusuma-plugin-keypress/issues/2)
+- fusuma-plugin-sendkey causes error [\#18](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/18)
 
-## [v0.2.0](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.2.0) (2020-03-18)
+**Merged pull requests:**
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.1.1...v0.2.0)
+- fix for `cannot load such file -- revdev` [\#19](https://github.com/iberianpig/fusuma-plugin-sendkey/pull/19) ([HritwikSinghal](https://github.com/HritwikSinghal))
+- add arch instructions [\#15](https://github.com/iberianpig/fusuma-plugin-sendkey/pull/15) ([HritwikSinghal](https://github.com/HritwikSinghal))
+
+## [v0.6.0.pre](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.6.0.pre) (2020-11-09)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.5.1...v0.6.0.pre)
 
 **Closed issues:**
 
-- Trigger a command multiple times while keeping the key pressed [\#1](https://github.com/iberianpig/fusuma-plugin-keypress/issues/1)
+- Keyboard name not working? [\#12](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/12)
+- Missing instruction to install: plugin needs "build-essential" package [\#11](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/11)
+- What is 'plus' called? [\#10](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/10)
+- Fusuma works, Fusuma-Plugin-Sendkey works, But nothing happens [\#9](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/9)
 
-## [v0.1.1](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.1.1) (2020-02-18)
+## [v0.5.1](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.5.1) (2020-07-14)
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.1.0...v0.1.1)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.5.0...v0.5.1)
 
-## [v0.1.0](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.1.0) (2019-11-12)
+## [v0.5.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.5.0) (2020-07-13)
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/fb8d8ccfc3828e487607706335f670ae5392f08d...v0.1.0)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.4.0...v0.5.0)
+
+**Fixed bugs:**
+
+- sendkey: Keyboard /keyboard/ is not found [\#5](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/5)
+- Allow keyboard pattern /keyboard|Keyboard|KEYBOARD/ [\#8](https://github.com/iberianpig/fusuma-plugin-sendkey/pull/8) ([iberianpig](https://github.com/iberianpig))
+
+**Closed issues:**
+
+- PLUS key unsupported [\#4](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/4)
+- mkmf.rb can't find header files for ruby at /usr/lib/ruby/include/ruby.h [\#3](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/3)
+
+## [v0.4.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.4.0) (2020-03-25)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.3.0...v0.4.0)
+
+## [v0.3.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.3.0) (2020-03-24)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.2.1...v0.3.0)
+
+**Closed issues:**
+
+- Can not use the plugin. [\#2](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/2)
+- Implement --clearmodifiers [\#1](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/1)
+
+## [v0.2.1](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.2.1) (2020-03-04)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.2.0...v0.2.1)
+
+## [v0.2.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.2.0) (2020-03-04)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.1.1...v0.2.0)
+
+## [v0.1.1](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.1.1) (2020-03-03)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.1.0...v0.1.1)
+
+## [v0.1.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.1.0) (2020-03-02)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/7d1d13d5d0215174b4659e7e93e628f55f48c7d1...v0.1.0)
 
 
 

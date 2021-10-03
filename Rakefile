@@ -20,7 +20,7 @@ task :bump, :type do |_, args|
 
   GitHubChangelogGenerator::RakeTask.new :changelog do |config|
     config.user = 'iberianpig'
-    config.project = 'fusuma-plugin-keypress'
+    config.project = 'fusuma-plugin-sendkey'
     config.future_release = next_version
   end
 
