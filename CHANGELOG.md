@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.6.3](https://github.com/iberianpig/fusuma-plugin-keypress/tree/0.6.3) (2021-10-03)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.4.1...0.6.3)
+
+**Closed issues:**
+
+- Key combinations sometimes do not work in Ubuntu 21.04 [\#5](https://github.com/iberianpig/fusuma-plugin-keypress/issues/5)
+- It doesn't work on Debian Gnome [\#4](https://github.com/iberianpig/fusuma-plugin-keypress/issues/4)
+
+## [v0.4.1](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.4.1) (2021-04-13)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.4.0...v0.4.1)
+
+## [v0.4.0](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.4.0) (2021-04-12)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.4.0.pre2...v0.4.0)
+
 ## [v0.4.0.pre2](https://github.com/iberianpig/fusuma-plugin-keypress/tree/v0.4.0.pre2) (2021-04-01)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-keypress/compare/v0.4.0.pre...v0.4.0.pre2)
