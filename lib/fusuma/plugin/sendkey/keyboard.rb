@@ -10,6 +10,8 @@ module Fusuma
     module Sendkey
       # Emulate Keyboard
       class Keyboard
+        INTERVAL = 0.01
+
         MODIFIER_KEY_CODES = %w[
           KEY_CAPSLOCK
           KEY_LEFTALT
@@ -45,11 +47,11 @@ module Fusuma
         def type(param:)
           return unless param.is_a?(String)
 
-          param_keycodes = split_param(param)
-          clear_modifiers(MODIFIER_KEY_CODES - param_keycodes)
-          param_keycodes.each { |keycode| key_event(keycode: keycode, press: true) }
+          keycodes = split_param(param)
+          clear_modifiers(MODIFIER_KEY_CODES - keycodes)
+          keycodes.each { |keycode| key_event(keycode: keycode, press: true) && wait }
           key_sync(press: true)
-          param_keycodes.reverse.each { |keycode| key_event(keycode: keycode, press: false) }
+          keycodes.reverse.each { |keycode| key_event(keycode: keycode, press: false) && wait }
           key_sync(press: false)
         end
 
@@ -132,6 +134,10 @@ module Fusuma
 
         def remove_prefix(keycode)
           keycode.gsub('KEY_', '')
+        end
+
+        def wait
+          sleep(INTERVAL)
         end
       end
     end
