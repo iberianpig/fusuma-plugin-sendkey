@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.6.4](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/0.6.4) (2021-11-06)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.6.3...0.6.4)
+
+**Closed issues:**
+
+- Key combinations sometimes do not work in Ubuntu 21.04 [\#23](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/23)
+
+**Merged pull requests:**
+
+- Set press/release interval for recognizing Gnome 40.x [\#25](https://github.com/iberianpig/fusuma-plugin-sendkey/pull/25) ([iberianpig](https://github.com/iberianpig))
+
 ## [v0.6.3](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.6.3) (2021-10-03)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.6.2...v0.6.3)
