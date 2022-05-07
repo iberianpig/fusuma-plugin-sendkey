@@ -40,26 +40,32 @@ module Fusuma
           @device = Device.new(path: "/dev/input/#{device.id}")
         end
 
-        attr_reader :device
-
         # @param param [String]
-        # @param keep [String]
         def type(param:)
           return unless param.is_a?(String)
 
-          keycodes = split_param(param)
-          clear_modifiers(MODIFIER_KEY_CODES - keycodes)
-          keycodes.each { |keycode| key_event(keycode: keycode, press: true) && wait }
+          param_keycodes = param_to_keycodes(param)
+          clear_modifiers(MODIFIER_KEY_CODES - param_keycodes)
+          param_keycodes.each { |keycode| keydown(keycode) }
           key_sync(press: true)
-          keycodes.reverse.each { |keycode| key_event(keycode: keycode, press: false) && wait }
+          param_keycodes.reverse.each { |keycode| keyup(keycode) }
           key_sync(press: false)
+        end
+
+        def keydown(keycode)
+          key_event(keycode: keycode, press: true)
+          sleep(INTERVAL)
+        end
+
+        def keyup(keycode)
+          key_event(keycode: keycode, press: false)
         end
 
         # @param param [String]
         def valid?(param:)
           return unless param.is_a?(String)
 
-          keycodes = split_param(param)
+          keycodes = param_to_keycodes(param)
           keycodes.all? { |keycode| support?(keycode) }
         end
 
@@ -85,14 +91,10 @@ module Fusuma
 
         def support?(keycode)
           @supported_code ||= {}
-          @supported_code[keycode] ||= if find_code(keycode: keycode)
-                                         true
-                                       else
-                                         search_candidates(keycode: keycode)
-                                       end
+          @supported_code[keycode] ||= find_code(keycode: keycode)
         end
 
-        def search_candidates(keycode:)
+        def warn_undefined_codes(keycode:)
           query = keycode&.upcase&.gsub('KEY_', '')
 
           candidates = search_codes(query: query)
@@ -110,7 +112,10 @@ module Fusuma
         def find_code(keycode: nil)
           query = keycode&.upcase&.gsub('KEY_', '')
 
-          Revdev.constants.find { |c| c == "KEY_#{query}".to_sym }
+          result = Revdev.constants.find { |c| c == "KEY_#{query}".to_sym }
+
+          warn_undefined_codes(keycode: keycode) unless result
+          result
         end
 
         def keycode_const(keycode)
@@ -122,11 +127,13 @@ module Fusuma
           keycodes.each { |code| key_event(keycode: code, press: false) }
         end
 
-        private
-
-        def split_param(param)
+        # @param [String]
+        # @return [Array<String>]
+        def param_to_keycodes(param)
           param.split('+').map { |code| key_prefix(code) }
         end
+
+        private
 
         def key_prefix(code)
           "KEY_#{code.upcase}"
@@ -134,10 +141,6 @@ module Fusuma
 
         def remove_prefix(keycode)
           keycode.gsub('KEY_', '')
-        end
-
-        def wait
-          sleep(INTERVAL)
         end
       end
     end
