@@ -46,15 +46,12 @@ module Fusuma
 
           param_keycodes = param_to_keycodes(param)
           clear_modifiers(MODIFIER_KEY_CODES - param_keycodes)
-          param_keycodes.each { |keycode| keydown(keycode) }
-          key_sync(press: true)
-          param_keycodes.reverse.each { |keycode| keyup(keycode) }
-          key_sync(press: false)
+          param_keycodes.each { |keycode| keydown(keycode) && key_sync }
+          param_keycodes.reverse.each { |keycode| keyup(keycode) && key_sync }
         end
 
         def keydown(keycode)
           key_event(keycode: keycode, press: true)
-          sleep(INTERVAL)
         end
 
         def keyup(keycode)
@@ -79,14 +76,15 @@ module Fusuma
           @device.write_event(event)
         end
 
-        def key_sync(press: true)
+        def key_sync
           event = Revdev::InputEvent.new(
             nil,
             Revdev.const_get(:EV_SYN),
             Revdev.const_get(:SYN_REPORT),
-            press ? 1 : 0
+            0
           )
           @device.write_event(event)
+          sleep(INTERVAL)
         end
 
         def support?(keycode)
