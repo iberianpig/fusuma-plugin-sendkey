@@ -12,26 +12,26 @@ module Fusuma
           context 'when keyboard is found' do
             before do
               dummy_keyboard = Fusuma::Device.new(name: 'dummy keyboard')
-              allow(described_class)
+              allow(Keyboard)
                 .to receive(:find_device)
                 .and_return(dummy_keyboard)
               allow(Sendkey::Device).to receive(:new).and_return('dummy')
             end
 
             it 'does not raise error' do
-              expect { described_class.new }.not_to raise_error
+              expect { Keyboard.new }.not_to raise_error
             end
           end
 
           context 'when keyboard is not found' do
             before do
-              allow(described_class)
+              allow(Keyboard)
                 .to receive(:find_device)
                 .and_return(nil)
             end
 
             it 'does not raise error' do
-              expect { described_class.new }.to raise_error SystemExit
+              expect { Keyboard.new }.to raise_error SystemExit
             end
           end
 
@@ -39,28 +39,28 @@ module Fusuma
             before do
               other_device = Fusuma::Device.new(name: 'Keyboard', id: 'dummy')
 
-              allow(described_class)
+              allow(Keyboard)
                 .to receive(:find_device)
                 .and_return(other_device)
               allow(Sendkey::Device).to receive(:new).and_return('dummy')
             end
 
             it 'does not raise error' do
-              expect { described_class.new }.not_to raise_error
+              expect { Keyboard.new }.not_to raise_error
             end
           end
 
           context 'when detected device name is KEYBOARD (Upper case)' do
             before do
               other_device = Fusuma::Device.new(name: 'KEYBOARD', id: 'dummy')
-              allow(described_class)
+              allow(Keyboard)
                 .to receive(:find_device)
                 .and_return(other_device)
               allow(Sendkey::Device).to receive(:new).and_return('dummy')
             end
 
             it 'does not raise error' do
-              expect { described_class.new }.not_to raise_error
+              expect { Keyboard.new }.not_to raise_error
             end
           end
 
@@ -75,12 +75,12 @@ module Fusuma
             end
 
             it 'does not raise error' do
-              expect { described_class.new(name_pattern: 'Awesome KEY/BOARD') }.not_to raise_error
+              expect { Keyboard.new(name_pattern: 'Awesome KEY/BOARD') }.not_to raise_error
             end
           end
 
           context 'when name pattern (use default) is not given' do
-            subject { -> { described_class.new(name_pattern: nil) } }
+            subject { -> { Keyboard.new(name_pattern: nil) } }
 
             before do
               allow(Sendkey::Device).to receive(:new).and_return('dummy')
@@ -138,7 +138,7 @@ module Fusuma
 
         describe '#type' do
           before do
-            allow(described_class)
+            allow(Keyboard)
               .to receive(:find_device)
               .and_return(Fusuma::Device.new(name: 'dummy keyboard'))
 
@@ -148,13 +148,13 @@ module Fusuma
 
             allow(Sendkey::Device).to receive(:new).and_return(@device)
 
-            @keyboard = described_class.new
+            @keyboard = Keyboard.new
           end
 
           it 'presses key KEY_A and release KEY_A' do
             expect(@keyboard).to receive(:clear_modifiers).ordered
-            expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
-            expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false).ordered
+            expect(@keyboard).to receive(:send_event).with(code: 'KEY_A', press: true).ordered
+            expect(@keyboard).to receive(:send_event).with(code: 'KEY_A', press: false).ordered
             @keyboard.type(param: 'A')
           end
 
@@ -170,10 +170,10 @@ module Fusuma
 
             it 'types (Shift)A' do
               expect(@keyboard).to receive(:clear_modifiers).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT', press: true).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_LEFTSHIFT', press: false).ordered
+              expect(@keyboard).to receive(:send_event).with(code: 'KEY_LEFTSHIFT', press: true).ordered
+              expect(@keyboard).to receive(:send_event).with(code: 'KEY_A', press: true).ordered
+              expect(@keyboard).to receive(:send_event).with(code: 'KEY_A', press: false).ordered
+              expect(@keyboard).to receive(:send_event).with(code: 'KEY_LEFTSHIFT', press: false).ordered
               @keyboard.type(param: @keys)
             end
           end
@@ -185,10 +185,10 @@ module Fusuma
 
             it 'types AB' do
               expect(@keyboard).to receive(:clear_modifiers).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: true).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_B', press: true).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_B', press: false).ordered
-              expect(@keyboard).to receive(:key_event).with(keycode: 'KEY_A', press: false).ordered
+              expect(@keyboard).to receive(:send_event).with(code: 'KEY_A', press: true).ordered
+              expect(@keyboard).to receive(:send_event).with(code: 'KEY_B', press: true).ordered
+              expect(@keyboard).to receive(:send_event).with(code: 'KEY_B', press: false).ordered
+              expect(@keyboard).to receive(:send_event).with(code: 'KEY_A', press: false).ordered
               @keyboard.type(param: @keys)
             end
           end

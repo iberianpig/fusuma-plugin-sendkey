@@ -45,17 +45,18 @@ module Fusuma
           return unless param.is_a?(String)
 
           param_keycodes = param_to_keycodes(param)
+          # release other modifier keys before sending key
           clear_modifiers(MODIFIER_KEY_CODES - param_keycodes)
           param_keycodes.each { |keycode| keydown(keycode) && key_sync }
           param_keycodes.reverse.each { |keycode| keyup(keycode) && key_sync }
         end
 
         def keydown(keycode)
-          key_event(keycode: keycode, press: true)
+          send_event(code: keycode, press: true)
         end
 
         def keyup(keycode)
-          key_event(keycode: keycode, press: false)
+          send_event(code: keycode, press: false)
         end
 
         # @param param [String]
@@ -66,11 +67,11 @@ module Fusuma
           keycodes.all? { |keycode| support?(keycode) }
         end
 
-        def key_event(keycode:, press: true)
+        def send_event(code:, press: true)
           event = Revdev::InputEvent.new(
             nil,
             Revdev.const_get(:EV_KEY),
-            Revdev.const_get(keycode),
+            Revdev.const_get(code),
             press ? 1 : 0
           )
           @device.write_event(event)
@@ -122,18 +123,18 @@ module Fusuma
 
         # @param [Array<String>] keycodes to be released
         def clear_modifiers(keycodes)
-          keycodes.each { |code| key_event(keycode: code, press: false) }
+          keycodes.each { |code| send_event(code: code, press: false) }
         end
 
         # @param [String]
         # @return [Array<String>]
         def param_to_keycodes(param)
-          param.split('+').map { |code| key_prefix(code) }
+          param.split('+').map { |keyname| add_key_prefix(keyname) }
         end
 
         private
 
-        def key_prefix(code)
+        def add_key_prefix(code)
           "KEY_#{code.upcase}"
         end
 
