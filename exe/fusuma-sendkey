@@ -4,6 +4,7 @@
 require 'optparse'
 require 'fusuma/plugin/inputs/libinput_command_input.rb'
 require_relative '../lib/fusuma/plugin/sendkey/keyboard.rb'
+require_relative '../lib/fusuma/plugin/sendkey/mouse.rb'
 require_relative '../lib/fusuma/plugin/sendkey/version.rb'
 
 option = {}
@@ -12,6 +13,11 @@ opt = OptionParser.new
 opt.on('-l', '--list-keycodes',
        'List available keycodes') do |v|
   option[:list] = v
+end
+
+opt.on('-b', '--mouse-btn',
+       'send mouse button') do |v|
+  option[:button] = v
 end
 
 opt.on('--version', 'Show version') do |v|
@@ -27,6 +33,22 @@ end
 
 if option[:version]
   puts Fusuma::Plugin::Sendkey::VERSION
+  return
+end
+
+if option[:button]
+  mouse = Fusuma::Plugin::Sendkey::Mouse.new
+  sleep 1
+
+  param = ARGV.first
+
+  if param.nil?
+    warn 'fusuma-sendkey -b require 1 arugument'
+    warn 'e.g. fusuma-sendkey -b LEFT'
+    exit 1
+  end
+
+  mouse.valid?(param: param) && mouse.click_button(param: param)
   return
 end
 
