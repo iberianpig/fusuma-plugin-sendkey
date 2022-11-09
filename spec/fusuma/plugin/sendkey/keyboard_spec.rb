@@ -192,6 +192,36 @@ module Fusuma
               @keyboard.type(param: @keys)
             end
           end
+
+          context "with keypress" do
+            context "when keypress modifier key contains a sendkey parameter" do
+              before do
+                @keypress_keys = "LEFTMETA"
+                @param_keys = "LEFTMETA+LEFT"
+              end
+
+              it "sends KEY_LEFT (without clearng or sending KEY_LEFTMETA which pressing by user)" do
+                expect(@keyboard).to receive(:clear_modifiers).with(Keyboard::MODIFIER_KEY_CODES - ["KEY_LEFTMETA"]).ordered
+                expect(@keyboard).to receive(:keydown).with("KEY_LEFT").ordered
+                expect(@keyboard).to receive(:keyup).with("KEY_LEFT").ordered
+                @keyboard.type(param: @param_keys, keep: @keypress_keys)
+              end
+            end
+
+            context "when keypress modifier key does NOT contains a sendkey parameter" do
+              before do
+                @keypress_keys = "LEFTALT"
+                @param_keys = "BRIGHTNESSUP"
+              end
+
+              it "sends KEY_BRIGHTNESSUP (and clear KEY_LEFTALT pressing by user)" do
+                expect(@keyboard).to receive(:clear_modifiers).with(array_including("KEY_LEFTALT")).ordered
+                expect(@keyboard).to receive(:keydown).with("KEY_BRIGHTNESSUP").ordered
+                expect(@keyboard).to receive(:keyup).with("KEY_BRIGHTNESSUP").ordered
+                @keyboard.type(param: @param_keys, keep: @keypress_keys)
+              end
+            end
+          end
         end
       end
     end
