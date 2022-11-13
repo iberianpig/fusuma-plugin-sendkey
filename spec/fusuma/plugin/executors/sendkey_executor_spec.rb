@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
-require 'fusuma/plugin/executors/executor'
-require 'fusuma/plugin/events/event'
-require 'fusuma/plugin/events/records/index_record'
+require "fusuma/plugin/executors/executor"
+require "fusuma/plugin/events/event"
+require "fusuma/plugin/events/records/index_record"
 
-require './lib/fusuma/plugin/executors/sendkey_executor'
+require "./lib/fusuma/plugin/executors/sendkey_executor"
 
 module Fusuma
   module Plugin
@@ -33,7 +33,7 @@ module Fusuma
         before do
           index = Config::Index.new([:dummy, 1, :direction])
           record = Events::Records::IndexRecord.new(index: index)
-          @event = Events::Event.new(tag: 'dummy_detector', record: record)
+          @event = Events::Event.new(tag: "dummy_detector", record: record)
           @executor = described_class.new
 
           @keyboard = instance_double(Sendkey::Keyboard)
@@ -41,13 +41,13 @@ module Fusuma
           allow(@executor).to receive(:keyboard).and_return @keyboard
         end
 
-        describe '#execute' do
+        describe "#execute" do
           before do
             allow(Process).to receive(:daemon).with(true)
             allow(Process).to receive(:detach).with(anything)
           end
 
-          it 'fork' do
+          it "fork" do
             expect(@executor).to receive(:fork).and_yield do |block_context|
               expect(block_context).to receive(:_execute).with(@event)
             end
@@ -56,31 +56,31 @@ module Fusuma
           end
         end
 
-        describe '#_execute' do
-          it 'send KEY_CODE message to keybard' do
-            allow(@executor).to receive(:search_param).with(@event).and_return('KEY_CODE')
-            expect(@keyboard).to receive(:type).with(param: 'KEY_CODE')
+        describe "#_execute" do
+          it "send KEY_CODE message to keybard" do
+            allow(@executor).to receive(:search_param).with(@event).and_return("KEY_CODE")
+            expect(@keyboard).to receive(:type).with(param: "KEY_CODE")
             @executor._execute(@event)
           end
         end
 
-        describe '#executable?' do
+        describe "#executable?" do
           before do
-            allow(@keyboard).to receive(:valid?).with(param: 'MODIFIER_CODE+KEY_CODE')
-                                                .and_return true
-            allow(@keyboard).to receive(:valid?).with(param: 'KEY_CODE')
-                                                .and_return true
-            allow(@keyboard).to receive(:valid?).with(param: 'INVALID_CODE')
-                                                .and_return false
+            allow(@keyboard).to receive(:valid?).with(param: "MODIFIER_CODE+KEY_CODE")
+              .and_return true
+            allow(@keyboard).to receive(:valid?).with(param: "KEY_CODE")
+              .and_return true
+            allow(@keyboard).to receive(:valid?).with(param: "INVALID_CODE")
+              .and_return false
           end
 
-          context 'when given valid event tagged as xxxx_detector' do
+          context "when given valid event tagged as xxxx_detector" do
             it { expect(@executor).to be_executable(@event) }
           end
 
-          context 'when given INVALID event tagged as invalid_tag' do
+          context "when given INVALID event tagged as invalid_tag" do
             before do
-              @event.tag = 'invalid_tag'
+              @event.tag = "invalid_tag"
             end
 
             it { expect(@executor).not_to be_executable(@event) }
@@ -104,7 +104,7 @@ module Fusuma
               Config.custom_path = nil
             end
 
-            it 'returns true' do
+            it "returns true" do
               expect(@executor).to be_executable(@event)
             end
           end
@@ -127,7 +127,7 @@ module Fusuma
               Config.custom_path = nil
             end
 
-            it 'returns true' do
+            it "returns true" do
               expect(@executor).not_to be_executable(@event)
             end
           end

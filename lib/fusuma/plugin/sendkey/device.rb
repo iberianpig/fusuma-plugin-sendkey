@@ -10,7 +10,7 @@ module Fusuma
         end
 
         def path
-          raise 'Device path is not found' if @evdev.nil?
+          raise "Device path is not found" if @evdev.nil?
 
           @path ||= @evdev.file.path
         end

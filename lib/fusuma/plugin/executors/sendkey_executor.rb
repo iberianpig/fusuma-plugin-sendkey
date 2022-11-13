@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../sendkey/keyboard'
+require_relative "../sendkey/keyboard"
 
 module Fusuma
   module Plugin
@@ -41,7 +41,7 @@ module Fusuma
         # @param event [Event]
         # @return [TrueClass, FalseClass]
         def executable?(event)
-          event.tag.end_with?('_detector') &&
+          event.tag.end_with?("_detector") &&
             event.record.type == :index &&
             keyboard.valid?(param: search_param(event))
         end

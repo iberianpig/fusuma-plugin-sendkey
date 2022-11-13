@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'revdev'
-require 'fusuma/device'
+require "revdev"
+require "fusuma/device"
 
-require_relative './device'
+require_relative "./device"
 
 module Fusuma
   module Plugin
@@ -29,7 +29,7 @@ module Fusuma
         end
 
         def initialize(name_pattern: nil)
-          name_pattern ||= 'keyboard|Keyboard|KEYBOARD'
+          name_pattern ||= "keyboard|Keyboard|KEYBOARD"
           device = Keyboard.find_device(name_pattern: name_pattern)
 
           if device.nil?
@@ -48,7 +48,7 @@ module Fusuma
           # release other modifier keys before sending key
           clear_modifiers(MODIFIER_KEY_CODES - param_keycodes)
           param_keycodes.each { |keycode| keydown(keycode) && key_sync }
-          param_keycodes.reverse.each { |keycode| keyup(keycode) && key_sync }
+          param_keycodes.reverse_each { |keycode| keyup(keycode) && key_sync }
         end
 
         def keydown(keycode)
@@ -94,22 +94,22 @@ module Fusuma
         end
 
         def warn_undefined_codes(keycode:)
-          query = keycode&.upcase&.gsub('KEY_', '')
+          query = keycode&.upcase&.gsub("KEY_", "")
 
           candidates = search_codes(query: query)
 
-          warn "Did you mean? #{candidates.join(' / ')}" unless candidates.empty?
+          warn "Did you mean? #{candidates.join(" / ")}" unless candidates.empty?
           warn "sendkey: #{remove_prefix(keycode)} is unsupported."
         end
 
         def search_codes(query: nil)
           Revdev.constants
-                .select { |c| c[/KEY_.*#{query}.*/] }
-                .map { |c| c.to_s.gsub('KEY_', '') }
+            .select { |c| c[/KEY_.*#{query}.*/] }
+            .map { |c| c.to_s.gsub("KEY_", "") }
         end
 
         def find_code(keycode: nil)
-          query = keycode&.upcase&.gsub('KEY_', '')
+          query = keycode&.upcase&.gsub("KEY_", "")
 
           result = Revdev.constants.find { |c| c == "KEY_#{query}".to_sym }
 
@@ -129,7 +129,7 @@ module Fusuma
         # @param [String]
         # @return [Array<String>]
         def param_to_keycodes(param)
-          param.split('+').map { |keyname| add_key_prefix(keyname) }
+          param.split("+").map { |keyname| add_key_prefix(keyname) }
         end
 
         private
@@ -139,7 +139,7 @@ module Fusuma
         end
 
         def remove_prefix(keycode)
-          keycode.gsub('KEY_', '')
+          keycode.gsub("KEY_", "")
         end
       end
     end
