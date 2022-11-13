@@ -1,34 +1,9 @@
-inherit_from: .rubocop_todo.yml
-
 require:
-  - rubocop-rspec
+  - standard
+inherit_gem:
+  standard: config/base.yml
+
 AllCops:
-  TargetRubyVersion: '2.5'
+  TargetRubyVersion: "2.5"
   NewCops: enable
   SuggestExtensions: false
-
-Metrics/ModuleLength:
-  Exclude:
-    - "**/*_spec.rb"
-
-Metrics/BlockLength:
-  Exclude:
-    - "**/*_spec.rb"
-    - "fusuma-plugin-*.gemspec"
-
-Layout/LineLength:
-  Max: 100
-  Exclude:
-    - "**/*_spec.rb"
-    - "fusuma-plugin-*.gemspec"
-
-Style/HashEachMethods:
-  Enabled: true
-Style/HashTransformKeys:
-  Enabled: true
-Style/HashTransformValues:
-  Enabled: true
-
-
-RSpec/MessageSpies:
-  EnforcedStyle: receive
