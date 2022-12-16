@@ -1,8 +1,16 @@
 # Changelog
 
-## [0.6.4](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/0.6.4) (2021-11-06)
+## [0.7.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/0.7.0) (2022-12-16)
 
-[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.6.3...0.6.4)
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.6.4...0.7.0)
+
+**Merged pull requests:**
+
+- Add support for keypress parameter in sendkey executor [\#28](https://github.com/iberianpig/fusuma-plugin-sendkey/pull/28) ([iberianpig](https://github.com/iberianpig))
+
+## [v0.6.4](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.6.4) (2021-11-06)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.6.3...v0.6.4)
 
 **Closed issues:**
 
@@ -10,7 +18,7 @@
 
 **Merged pull requests:**
 
-- Set press/release interval for recognizing Gnome 40.x [\#25](https://github.com/iberianpig/fusuma-plugin-sendkey/pull/25) ([iberianpig](https://github.com/iberianpig))
+- Set press/release interval for recognizing key combinations on Gnome 40.x [\#25](https://github.com/iberianpig/fusuma-plugin-sendkey/pull/25) ([iberianpig](https://github.com/iberianpig))
 
 ## [v0.6.3](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.6.3) (2021-10-03)
 
