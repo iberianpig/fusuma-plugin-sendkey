@@ -34,7 +34,10 @@ module Fusuma
         # @param event [Event]
         # @return [nil]
         def _execute(event)
-          keyboard.type(param: search_param(event))
+          keyboard.type(
+            param: search_param(event),
+            keep: search_keypress(event)
+          )
         end
 
         # check executable
@@ -58,6 +61,15 @@ module Fusuma
         def search_param(event)
           index = Config::Index.new([*event.record.index.keys, :sendkey])
           Config.search(index)
+        end
+
+        # @param event [Event]
+        # @return [String]
+        def search_keypress(event)
+          keys = event.record.index.keys
+          keypress_index = keys.find_index { |k| k.symbol == :keypress }
+          code = keypress_index && keys[keypress_index + 1].symbol
+          code.to_s
         end
       end
     end

@@ -41,14 +41,18 @@ module Fusuma
         end
 
         # @param param [String]
-        def type(param:)
+        # @param keep [String]
+        def type(param:, keep: "")
           return unless param.is_a?(String)
 
           param_keycodes = param_to_keycodes(param)
+          keep_keycodes = param_to_keycodes(keep)
+
+          type_keycodes = param_keycodes - keep_keycodes
           # release other modifier keys before sending key
           clear_modifiers(MODIFIER_KEY_CODES - param_keycodes)
-          param_keycodes.each { |keycode| keydown(keycode) && key_sync }
-          param_keycodes.reverse_each { |keycode| keyup(keycode) && key_sync }
+          type_keycodes.each { |keycode| keydown(keycode) && key_sync }
+          type_keycodes.reverse_each { |keycode| keyup(keycode) && key_sync }
         end
 
         def keydown(keycode)

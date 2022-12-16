@@ -18,6 +18,9 @@ module Fusuma
               1:
                 direction:
                   sendkey: KEY_CODE
+                  keypress:
+                    LEFTSHIFT:
+                      sendkey: KEY_CODE_WITH_KEYPRESS
 
             plugin:
               executors:
@@ -34,7 +37,7 @@ module Fusuma
           index = Config::Index.new([:dummy, 1, :direction])
           record = Events::Records::IndexRecord.new(index: index)
           @event = Events::Event.new(tag: "dummy_detector", record: record)
-          @executor = described_class.new
+          @executor = SendkeyExecutor.new
 
           @keyboard = instance_double(Sendkey::Keyboard)
 
@@ -59,8 +62,25 @@ module Fusuma
         describe "#_execute" do
           it "send KEY_CODE message to keybard" do
             allow(@executor).to receive(:search_param).with(@event).and_return("KEY_CODE")
-            expect(@keyboard).to receive(:type).with(param: "KEY_CODE")
+            allow(@executor).to receive(:search_keypress).with(@event).and_return(nil)
+            expect(@keyboard).to receive(:type).with(param: "KEY_CODE", keep: nil)
             @executor._execute(@event)
+          end
+
+          context "with keypress" do
+            before do
+              index_with_keypress = Config::Index.new(
+                [:dummy, 1, :direction, :keypress, :LEFTSHIFT]
+              )
+              record = Events::Records::IndexRecord.new(index: index_with_keypress)
+              @event = Events::Event.new(tag: "dummy_detector", record: record)
+            end
+
+            it "send KEY_CODE_WITH_KEYPRESS message to keybard" do
+              expect(@keyboard).to receive(:type).with(param: "KEY_CODE_WITH_KEYPRESS", keep: "LEFTSHIFT")
+
+              @executor._execute(@event)
+            end
           end
         end
 
