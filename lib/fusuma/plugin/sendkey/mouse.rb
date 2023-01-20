@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'revdev'
-require 'fusuma/device'
+require "revdev"
+require "fusuma/device"
 
-require_relative './device'
+require_relative "./device"
 
 module Fusuma
   module Plugin
@@ -17,7 +17,7 @@ module Fusuma
         end
 
         def initialize(name_pattern: nil)
-          name_pattern ||= 'mouse|Mouse|MOUSE'
+          name_pattern ||= "mouse|Mouse|MOUSE"
           device = Mouse.find_device(name_pattern: name_pattern)
 
           if device.nil?
@@ -31,16 +31,18 @@ module Fusuma
         # @param param [String]
         def click_button(param:)
           param_codes = param_to_codes(param)
-          param_codes.each { |code| down(code) && sync }
-          param_codes.reverse.each { |code| up(code) && sync }
+          param_codes.each { |code| press(code) && sync }
+          param_codes.reverse_each { |code| release(code) && sync }
         end
 
-        def down(code)
-          send_event(code: code, press: true)
+        def press_button(param:)
+          param_codes = param_to_codes(param)
+          param_codes.each { |code| press(code) && sync }
         end
 
-        def up(code)
-          send_event(code: code, press: false)
+        def release_button(param:)
+          param_codes = param_to_codes(param)
+          param_codes.each { |code| release(code) && sync }
         end
 
         # @param param [String]
@@ -49,6 +51,16 @@ module Fusuma
 
           codes = param_to_codes(param)
           codes.all? { |c| support?(c) }
+        end
+
+        private
+
+        def press(code)
+          send_event(code: code, press: true)
+        end
+
+        def release(code)
+          send_event(code: code, press: false)
         end
 
         def send_event(code:, press: true)
@@ -78,22 +90,22 @@ module Fusuma
         end
 
         def warn_undefined_codes(code:)
-          query = code&.upcase&.gsub('BTN_', '')
+          query = code&.upcase&.gsub("BTN_", "")
 
           candidates = search_codes(query: query)
 
-          warn "Did you mean? #{candidates.join(' / ')}" unless candidates.empty?
+          warn "Did you mean? #{candidates.join(" / ")}" unless candidates.empty?
           warn "sendkey: #{remove_prefix(code)} is unsupported."
         end
 
         def search_codes(query: nil)
           Revdev.constants
-                .select { |c| c[/BTN_.*#{query}.*/] }
-                .map { |c| c.to_s.gsub('BTN_', '') }
+            .select { |c| c[/BTN_.*#{query}.*/] }
+            .map { |c| c.to_s.gsub("BTN_", "") }
         end
 
         def find_code(code: nil)
-          query = code&.upcase&.gsub('BTN_', '')
+          query = code&.upcase&.gsub("BTN_", "")
 
           result = Revdev.constants.find { |c| c == "BTN_#{query}".to_sym }
 
@@ -108,17 +120,15 @@ module Fusuma
         # @param [String]
         # @return [Array<String>]
         def param_to_codes(param)
-          param.split('+').map { |name| add_prefix(name) }
+          param.split("+").map { |name| add_prefix(name) }
         end
-
-        private
 
         def add_prefix(name)
           "BTN_#{name.upcase}"
         end
 
         def remove_prefix(code)
-          code.gsub('BTN_', '')
+          code.gsub("BTN_", "")
         end
       end
     end
