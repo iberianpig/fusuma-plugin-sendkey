@@ -24,33 +24,57 @@ module Fusuma
           KEY_RIGHTMETA
         ].freeze
 
+        DEFAULT_NAME_PATTERN = "keyboard|Keyboard|KEYBOARD"
+        VIRTUAL_KEYBOARD = "fusuma_virtual_keyboard" # fusuma-plugin-remap creates uinput device
+
         def self.find_device(name_pattern:)
+          Fusuma::Device.reset
           Fusuma::Device.all.find { |d| d.name.match(/#{name_pattern}/) }
         end
 
         def initialize(name_pattern: nil)
-          name_pattern ||= "keyboard|Keyboard|KEYBOARD"
-          device = Keyboard.find_device(name_pattern: name_pattern)
+          device = if name_pattern
+            Keyboard.find_device(name_pattern: name_pattern)
+          else
+            Keyboard.find_device(name_pattern: VIRTUAL_KEYBOARD) || Keyboard.find_device(name_pattern: DEFAULT_NAME_PATTERN)
+          end
 
           if device.nil?
             warn "sendkey: Keyboard: /#{name_pattern}/ is not found"
             exit(1)
           end
+          MultiLogger.info "sendkey: Keyboard: #{device.name}"
 
+          @use_virtual_keyboard = device.name.match(/#{VIRTUAL_KEYBOARD}/o)
           @device = Device.new(path: "/dev/input/#{device.id}")
         end
 
-        # @param param [String]
-        # @param keep [String]
-        def type(param:, keep: "")
+        def use_virtual_keyboard?
+          @use_virtual_keyboard
+        end
+
+        # @param param [String] key names separated by '+' to type
+        # @param keep [String] key names separated by '+' to keep
+        # @param clear [String, Symbol] key names separated by '+' to clear or :all to relase all modifiers
+        def type(param:, keep: "", clear: "")
           return unless param.is_a?(String)
 
           param_keycodes = param_to_keycodes(param)
-          keep_keycodes = param_to_keycodes(keep)
+          type_keycodes = param_keycodes - param_to_keycodes(keep)
 
-          type_keycodes = param_keycodes - keep_keycodes
-          # release other modifier keys before sending key
-          clear_modifiers(MODIFIER_KEY_CODES - param_keycodes)
+          clear_keycodes =
+            case clear
+            when true
+              MODIFIER_KEY_CODES
+            when :none
+              []
+            else
+              # release keys specified by clearmodifiers
+              param_to_keycodes(clear)
+            end
+
+          clear_modifiers(clear_keycodes - param_keycodes)
+
           type_keycodes.each { |keycode| keydown(keycode) && key_sync }
           type_keycodes.reverse_each { |keycode| keyup(keycode) && key_sync }
         end
@@ -122,7 +146,7 @@ module Fusuma
         end
 
         def keycode_const(keycode)
-          Object.const_get "LinuxInput::#{keycode}"
+          Object.const_get "Revdev::#{keycode}"
         end
 
         # @param [Array<String>] keycodes to be released
