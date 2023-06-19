@@ -1,4 +1,4 @@
-# Fusuma::Plugin::Sendkey [![Gem Version](https://badge.fury.io/rb/fusuma-plugin-sendkey.svg)](https://badge.fury.io/rb/fusuma-plugin-sendkey) [![Build Status](https://travis-ci.com/iberianpig/fusuma-plugin-sendkey.svg?branch=master)](https://travis-ci.com/iberianpig/fusuma-plugin-sendkey)
+# Fusuma::Plugin::Sendkey [![Gem Version](https://badge.fury.io/rb/fusuma-plugin-sendkey.svg)](https://badge.fury.io/rb/fusuma-plugin-sendkey) [![Build Status](https://github.com/iberianpig/fusuma-plugin-sendkey/actions/workflows/main.yml/badge.svg)](https://github.com/iberianpig/fusuma-plugin-sendkey/actions/workflows/main.yml)
 
 [Fusuma](https://github.com/iberianpig/fusuma) plugin to send keyboard events
 
