@@ -21,6 +21,9 @@ module Fusuma
                   keypress:
                     LEFTSHIFT:
                       sendkey: KEY_CODE_WITH_KEYPRESS
+                    LEFTALT:
+                      sendkey: KEY_CODE_WITH_KEYPRESS_WITH_CLEAR
+                      clearmodifiers: true
 
             plugin:
               executors:
@@ -42,44 +45,38 @@ module Fusuma
           @keyboard = instance_double(Sendkey::Keyboard)
 
           allow(@executor).to receive(:keyboard).and_return @keyboard
+          allow(@keyboard).to receive(:use_virtual_keyboard?).and_return false
         end
 
         describe "#execute" do
-          before do
-            allow(Process).to receive(:daemon).with(true)
-            allow(Process).to receive(:detach).with(anything)
-          end
-
-          it "fork" do
-            expect(@executor).to receive(:fork).and_yield do |block_context|
-              expect(block_context).to receive(:_execute).with(@event)
-            end
-
-            @executor.execute(@event)
-          end
-        end
-
-        describe "#_execute" do
+          subject { @executor.execute(@event) }
           it "send KEY_CODE message to keybard" do
-            allow(@executor).to receive(:search_param).with(@event).and_return("KEY_CODE")
-            allow(@executor).to receive(:search_keypress).with(@event).and_return(nil)
-            expect(@keyboard).to receive(:type).with(param: "KEY_CODE", keep: nil)
-            @executor._execute(@event)
+            expect(@keyboard).to receive(:type).with(param: "KEY_CODE", keep: "", clear: :none)
+            subject
           end
 
           context "with keypress" do
             before do
-              index_with_keypress = Config::Index.new(
-                [:dummy, 1, :direction, :keypress, :LEFTSHIFT]
-              )
+              index_with_keypress = Config::Index.new([:dummy, 1, :direction, :keypress, :LEFTSHIFT])
               record = Events::Records::IndexRecord.new(index: index_with_keypress)
               @event = Events::Event.new(tag: "dummy_detector", record: record)
             end
 
             it "send KEY_CODE_WITH_KEYPRESS message to keybard" do
-              expect(@keyboard).to receive(:type).with(param: "KEY_CODE_WITH_KEYPRESS", keep: "LEFTSHIFT")
+              expect(@keyboard).to receive(:type).with(param: "KEY_CODE_WITH_KEYPRESS", keep: "LEFTSHIFT", clear: :none)
+              subject
+            end
+            context "with clearmodifiers" do
+              before do
+                index_with_keypress = Config::Index.new([:dummy, 1, :direction, :keypress, :LEFTALT])
+                record = Events::Records::IndexRecord.new(index: index_with_keypress)
+                @event = Events::Event.new(tag: "dummy_detector", record: record)
+              end
 
-              @executor._execute(@event)
+              it "send KEY_CODE_WITH_KEYPRESS_WITH_CLEAR message to keybard" do
+                expect(@keyboard).to receive(:type).with(param: "KEY_CODE_WITH_KEYPRESS_WITH_CLEAR", keep: "LEFTALT", clear: true)
+                subject
+              end
             end
           end
         end

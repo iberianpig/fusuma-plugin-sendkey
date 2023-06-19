@@ -137,6 +137,8 @@ module Fusuma
         end
 
         describe "#type" do
+          subject { @keyboard.type(param: @keys, keep: @keep, clear: @clear) }
+
           before do
             allow(Keyboard)
               .to receive(:find_device)
@@ -149,13 +151,17 @@ module Fusuma
             allow(Sendkey::Device).to receive(:new).and_return(@device)
 
             @keyboard = Keyboard.new
+            @keys = ""
+            @keep = ""
+            @clear = :none
           end
 
           it "presses key KEY_A and release KEY_A" do
+            @keys = "A"
             expect(@keyboard).to receive(:clear_modifiers).ordered
             expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: true).ordered
             expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: false).ordered
-            @keyboard.type(param: "A")
+            subject
           end
 
           context "with modifier keys" do
@@ -163,18 +169,53 @@ module Fusuma
               @keys = "LEFTSHIFT+A"
             end
 
-            it "clear all modifier keys except parameter of sendkey" do
-              expect(@keyboard).to receive(:clear_modifiers).with(Keyboard::MODIFIER_KEY_CODES - ["KEY_LEFTSHIFT"]).ordered
-              @keyboard.type(param: @keys)
-            end
-
             it "types (Shift)A" do
-              expect(@keyboard).to receive(:clear_modifiers).ordered
+              expect(@keyboard).to receive(:clear_modifiers).with([]).ordered
               expect(@keyboard).to receive(:send_event).with(code: "KEY_LEFTSHIFT", press: true).ordered
               expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: true).ordered
               expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: false).ordered
               expect(@keyboard).to receive(:send_event).with(code: "KEY_LEFTSHIFT", press: false).ordered
-              @keyboard.type(param: @keys)
+              subject
+            end
+
+            context "with keep option" do
+              before do
+                @keep = "LEFTSHIFT"
+              end
+              it "types (Shift)A and skip press and release LEFTSHIFT" do
+                expect(@keyboard).to receive(:clear_modifiers).with([]).ordered
+                expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: true).ordered
+                expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: false).ordered
+                subject
+              end
+
+              context "with clear option" do
+                before do
+                  @clear = true
+                end
+
+                it "clear modifiers without LEFTSHIFT" do
+                  expect(@keyboard).to receive(:clear_modifiers).with(Keyboard::MODIFIER_KEY_CODES - ["KEY_LEFTSHIFT"]).ordered
+                  expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: true).ordered
+                  expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: false).ordered
+                  subject
+                end
+              end
+            end
+
+            context "with clear option" do
+              before do
+                @clear = true
+              end
+
+              it "clear modifiers without LEFTSHIFT" do
+                expect(@keyboard).to receive(:clear_modifiers).with(Keyboard::MODIFIER_KEY_CODES - ["KEY_LEFTSHIFT"]).ordered
+                expect(@keyboard).to receive(:send_event).with(code: "KEY_LEFTSHIFT", press: true).ordered
+                expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: true).ordered
+                expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: false).ordered
+                expect(@keyboard).to receive(:send_event).with(code: "KEY_LEFTSHIFT", press: false).ordered
+                subject
+              end
             end
           end
 
@@ -189,36 +230,59 @@ module Fusuma
               expect(@keyboard).to receive(:send_event).with(code: "KEY_B", press: true).ordered
               expect(@keyboard).to receive(:send_event).with(code: "KEY_B", press: false).ordered
               expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: false).ordered
-              @keyboard.type(param: @keys)
+              subject
             end
           end
 
-          context "with keypress" do
+          context "with keep(keypress) option" do
             context "when keypress modifier key contains a sendkey parameter" do
               before do
-                @keypress_keys = "LEFTMETA"
-                @param_keys = "LEFTMETA+LEFT"
+                @keep = "LEFTMETA"
+                @keys = "LEFTMETA+LEFT"
               end
 
               it "sends KEY_LEFT (without clearng or sending KEY_LEFTMETA which pressing by user)" do
-                expect(@keyboard).to receive(:clear_modifiers).with(Keyboard::MODIFIER_KEY_CODES - ["KEY_LEFTMETA"]).ordered
+                expect(@keyboard).to receive(:clear_modifiers).with([]).ordered
                 expect(@keyboard).to receive(:keydown).with("KEY_LEFT").ordered
                 expect(@keyboard).to receive(:keyup).with("KEY_LEFT").ordered
-                @keyboard.type(param: @param_keys, keep: @keypress_keys)
+                subject
+              end
+
+              context "with clear option" do
+                before do
+                  @clear = true
+                end
+                it "clear modifiers without LEFTMETA" do
+                  expect(@keyboard).to receive(:clear_modifiers).with(Keyboard::MODIFIER_KEY_CODES - ["KEY_LEFTMETA"]).ordered
+                  expect(@keyboard).to receive(:keydown).with("KEY_LEFT").ordered
+                  expect(@keyboard).to receive(:keyup).with("KEY_LEFT").ordered
+                  subject
+                end
               end
             end
 
             context "when keypress modifier key does NOT contains a sendkey parameter" do
               before do
-                @keypress_keys = "LEFTALT"
-                @param_keys = "BRIGHTNESSUP"
+                @keep = "LEFTALT"
+                @keys = "BRIGHTNESSUP"
               end
 
               it "sends KEY_BRIGHTNESSUP (and clear KEY_LEFTALT pressing by user)" do
-                expect(@keyboard).to receive(:clear_modifiers).with(array_including("KEY_LEFTALT")).ordered
                 expect(@keyboard).to receive(:keydown).with("KEY_BRIGHTNESSUP").ordered
                 expect(@keyboard).to receive(:keyup).with("KEY_BRIGHTNESSUP").ordered
-                @keyboard.type(param: @param_keys, keep: @keypress_keys)
+                subject
+              end
+
+              context "with clear option" do
+                before do
+                  @clear = true
+                end
+                it "clear modifiers without LEFTALT" do
+                  expect(@keyboard).to receive(:clear_modifiers).with(array_including("KEY_LEFTALT")).ordered
+                  expect(@keyboard).to receive(:keydown).with("KEY_BRIGHTNESSUP").ordered
+                  expect(@keyboard).to receive(:keyup).with("KEY_BRIGHTNESSUP").ordered
+                  subject
+                end
               end
             end
           end

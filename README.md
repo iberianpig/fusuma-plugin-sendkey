@@ -85,6 +85,20 @@ swipe:
       sendkey: "LEFTCTRL+W" # close tab
 ```
 
+### clearmodifiers
+
+- `clearmodifiers: true` option clears other modifier keys before sending
+
+```yaml
+swipe:
+  4:
+    up:
+      keypress:
+        LEFTSHIFT:
+          sendkey: "LEFTMETA+DOWN"
+          clearmodifiers: true # clear LEFTSHIFT before sending LEFTMETA+DOWN
+```
+
 
 ### Specify keyboard by device name
 
@@ -104,6 +118,9 @@ plugin:
     sendkey_executor:
       device_name: 'YOUR KEYBOARD NAME'
 ```
+
+**If [fusuma-plugin-remap](https://github.com/iberianpig/fusuma-plugin-remap) is available, it will be automatically connected to `fusuma_virtual_keyboard`, so `device_name` option is not required.**
+
 
 ## Contributing
 

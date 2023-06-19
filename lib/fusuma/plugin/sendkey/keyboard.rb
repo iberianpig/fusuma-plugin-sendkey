@@ -55,8 +55,8 @@ module Fusuma
 
         # @param param [String] key names separated by '+' to type
         # @param keep [String] key names separated by '+' to keep
-        # @param clear [String, Symbol] key names separated by '+' to clear or :all to relase all modifiers
-        def type(param:, keep: "", clear: "")
+        # @param clear [String, Symbol, TrueClass] key names separated by '+' to clear or :all to relase all modifiers
+        def type(param:, keep: "", clear: :none)
           return unless param.is_a?(String)
 
           param_keycodes = param_to_keycodes(param)
@@ -66,7 +66,7 @@ module Fusuma
             case clear
             when true
               MODIFIER_KEY_CODES
-            when :none
+            when :none, false
               []
             else
               # release keys specified by clearmodifiers
