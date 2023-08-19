@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.8.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.8.0) (2023-08-19)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.7.1...v0.8.0)
+
 ## [v0.7.1](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.7.1) (2022-12-16)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.7.0...v0.7.1)
