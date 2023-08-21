@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
+require "rspec/debug"
 require "helpers/config_helper"
 
 RSpec.configure do |config|
