@@ -24,20 +24,17 @@ module Fusuma
           KEY_RIGHTMETA
         ].freeze
 
-        DEFAULT_NAME_PATTERN = "keyboard|Keyboard|KEYBOARD"
-        VIRTUAL_KEYBOARD = "fusuma_virtual_keyboard" # fusuma-plugin-remap creates uinput device
-
         def self.find_device(name_pattern:)
           Fusuma::Device.reset
-          Fusuma::Device.all.find { |d| d.name.match(/#{name_pattern}/) }
+          Fusuma::Device.all.find { |d|
+            next unless d.capabilities.include? "keyboard"
+
+            d.name.match(/#{name_pattern}/)
+          }
         end
 
         def initialize(name_pattern: nil)
-          device = if name_pattern
-            Keyboard.find_device(name_pattern: name_pattern)
-          else
-            Keyboard.find_device(name_pattern: VIRTUAL_KEYBOARD) || Keyboard.find_device(name_pattern: DEFAULT_NAME_PATTERN)
-          end
+          device = Keyboard.find_device(name_pattern: name_pattern)
 
           if device.nil?
             warn "sendkey: Keyboard: /#{name_pattern}/ is not found"
@@ -45,12 +42,7 @@ module Fusuma
           end
           MultiLogger.info "sendkey: Keyboard: #{device.name}"
 
-          @use_virtual_keyboard = device.name.match(/#{VIRTUAL_KEYBOARD}/o)
           @device = Device.new(path: "/dev/input/#{device.id}")
-        end
-
-        def use_virtual_keyboard?
-          @use_virtual_keyboard
         end
 
         # @param param [String] key names separated by '+' to type

@@ -59,7 +59,7 @@ module Fusuma
         # @return [String]
         def search_keypress(event)
           # if fusuma_virtual_keyboard exists, don't have to keep modifiers
-          return "" if keyboard.use_virtual_keyboard?
+          return "" if @device_name == "fusuma_virtual_keyboard"
 
           keys = event.record.index.keys
           keypress_index = keys.find_index { |k| k.symbol == :keypress }

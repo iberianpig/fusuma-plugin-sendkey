@@ -1,0 +1,4 @@
+plugin:
+  executors:
+    sendkey_executor:
+      device_name: keyboard|Keyboard|KEYBOARD

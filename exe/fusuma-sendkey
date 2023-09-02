@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'fusuma/config'
 require 'fusuma/plugin/inputs/libinput_command_input.rb'
 require_relative '../lib/fusuma/plugin/sendkey/keyboard.rb'
 require_relative '../lib/fusuma/plugin/sendkey/version.rb'
@@ -20,8 +21,13 @@ end
 
 opt.parse!(ARGV)
 
+device_name = Fusuma::Config.instance.fetch_config_params(
+  :device_name,
+  Fusuma::Config::Index.new([:plugin, :executors, :sendkey_executor])
+).fetch(:device_name, nil)
+
 if option[:list]
-  puts Fusuma::Plugin::Sendkey::Keyboard.new(name_pattern: nil).search_codes
+  puts Fusuma::Plugin::Sendkey::Keyboard.new(name_pattern: device_name).search_codes
   return
 end
 
@@ -38,5 +44,5 @@ if param.nil?
   exit 1
 end
 
-keyboard = Fusuma::Plugin::Sendkey::Keyboard.new
+keyboard = Fusuma::Plugin::Sendkey::Keyboard.new(name_pattern: device_name)
 keyboard.valid?(param: param) && keyboard.type(param: param)
