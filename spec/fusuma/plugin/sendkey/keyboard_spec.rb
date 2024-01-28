@@ -9,6 +9,8 @@ module Fusuma
     module Sendkey
       RSpec.describe Keyboard do
         describe "#new" do
+          subject { Keyboard.new }
+
           context "when keyboard is found" do
             before do
               dummy_keyboard = Fusuma::Device.new(name: "dummy keyboard")
@@ -18,26 +20,20 @@ module Fusuma
               allow(Sendkey::Device).to receive(:new).and_return("dummy")
             end
 
-            it "does not raise error" do
-              expect { Keyboard.new }.not_to raise_error
-            end
+            it { is_expected.to be_a Keyboard }
           end
 
           context "when keyboard is not found" do
             before do
-              allow(Keyboard)
-                .to receive(:find_device)
-                .and_return(nil)
+              allow(Keyboard).to receive(:find_device).and_return(nil)
             end
 
-            it "does not raise error" do
-              expect { Keyboard.new }.to raise_error SystemExit
-            end
+            it { expect { subject }.to raise_error(SystemExit) }
           end
 
           context "when detected device name is Keyboard (Capitarized)" do
             before do
-              other_device = Fusuma::Device.new(name: "Keyboard", id: "dummy")
+              other_device = Fusuma::Device.new(name: "Keyboard (Capitarized)", id: "dummy")
 
               allow(Keyboard)
                 .to receive(:find_device)
@@ -45,42 +41,39 @@ module Fusuma
               allow(Sendkey::Device).to receive(:new).and_return("dummy")
             end
 
-            it "does not raise error" do
-              expect { Keyboard.new }.not_to raise_error
-            end
+            it { is_expected.to be_a Keyboard }
           end
 
-          context "when detected device name is KEYBOARD (Upper case)" do
+          context "when detected device name is KEYBOARD (UPPER CASE)" do
             before do
-              other_device = Fusuma::Device.new(name: "KEYBOARD", id: "dummy")
+              other_device = Fusuma::Device.new(name: "KEYBOARD(UPPER CASE)", id: "dummy")
               allow(Keyboard)
                 .to receive(:find_device)
                 .and_return(other_device)
               allow(Sendkey::Device).to receive(:new).and_return("dummy")
             end
 
-            it "does not raise error" do
-              expect { Keyboard.new }.not_to raise_error
-            end
+            it { is_expected.to be_a Keyboard }
           end
 
           context "with given name pattern" do
+            subject { Keyboard.new(name_pattern: "Awesome KEY/BOARD") }
+
             before do
               specified_device = Fusuma::Device.new(
                 name: "Awesome KEY/BOARD input device",
-                id: "dummy"
+                id: "dummy",
+                capabilities: "keyboard"
               )
               allow(Fusuma::Device).to receive(:all).and_return([specified_device])
               allow(Sendkey::Device).to receive(:new).and_return("dummy")
             end
 
-            it "does not raise error" do
-              expect { Keyboard.new(name_pattern: "Awesome KEY/BOARD") }.not_to raise_error
-            end
+            it { is_expected.to be_a Keyboard }
           end
 
           context "when name pattern (use default) is not given" do
-            subject { -> { Keyboard.new(name_pattern: nil) } }
+            subject { Keyboard.new(name_pattern: nil) }
 
             before do
               allow(Sendkey::Device).to receive(:new).and_return("dummy")
@@ -90,48 +83,52 @@ module Fusuma
               before do
                 specified_device = Fusuma::Device.new(
                   name: "keyboard",
-                  id: "dummy"
+                  id: "dummy",
+                  capabilities: "keyboard"
                 )
                 allow(Fusuma::Device).to receive(:all).and_return([specified_device])
               end
 
-              it { is_expected.not_to raise_error }
+              it { is_expected.to be_a Keyboard }
             end
 
             context "when exist device named Keyboard(Capital-case)" do
               before do
                 specified_device = Fusuma::Device.new(
                   name: "Keyboard",
-                  id: "dummy"
+                  id: "dummy",
+                  capabilities: "keyboard"
                 )
                 allow(Fusuma::Device).to receive(:all).and_return([specified_device])
               end
 
-              it { is_expected.not_to raise_error }
+              it { is_expected.to be_a Keyboard }
             end
 
             context "when exist device named KEYBOARD(UPPER case)" do
               before do
                 specified_device = Fusuma::Device.new(
                   name: "KEYBOARD",
-                  id: "dummy"
+                  id: "dummy",
+                  capabilities: "keyboard"
                 )
                 allow(Fusuma::Device).to receive(:all).and_return([specified_device])
               end
 
-              it { is_expected.not_to raise_error }
+              it { is_expected.to be_a Keyboard }
             end
 
             context "when exist no device named keyboard|Keyboard|KEYBOARD" do
               before do
                 specified_device = Fusuma::Device.new(
                   name: "KEY-BOARD",
-                  id: "dummy"
+                  id: "dummy",
+                  capabilities: "keyboard"
                 )
                 allow(Fusuma::Device).to receive(:all).and_return([specified_device])
               end
 
-              it { is_expected.to raise_error(SystemExit) }
+              it { is_expected.to be_a Keyboard }
             end
           end
         end

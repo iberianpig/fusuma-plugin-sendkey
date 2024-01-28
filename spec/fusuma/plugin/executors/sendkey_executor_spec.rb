@@ -45,7 +45,6 @@ module Fusuma
           @keyboard = instance_double(Sendkey::Keyboard)
 
           allow(@executor).to receive(:keyboard).and_return @keyboard
-          allow(@keyboard).to receive(:use_virtual_keyboard?).and_return false
         end
 
         describe "#execute" do
