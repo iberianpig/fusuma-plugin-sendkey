@@ -27,7 +27,7 @@ module Fusuma
         def self.find_device(name_pattern:)
           Fusuma::Device.reset
           Fusuma::Device.all.find { |d|
-            next unless d.capabilities.include? "keyboard"
+            next unless /keyboard/.match?(d.capabilities)
 
             d.name.match(/#{name_pattern}/)
           }
