@@ -47,7 +47,7 @@ module Fusuma
 
         # @param param [String] key names separated by '+' to type
         # @param keep [String] key names separated by '+' to keep
-        # @param clear [String, Symbol, TrueClass] key names separated by '+' to clear or :all to relase all modifiers
+        # @param clear [String, Symbol, TrueClass] key names separated by '+' to clear or :all to release all modifiers
         def type(param:, keep: "", clear: :none)
           return unless param.is_a?(String)
 

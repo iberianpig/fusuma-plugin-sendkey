@@ -49,7 +49,7 @@ module Fusuma
 
         describe "#execute" do
           subject { @executor.execute(@event) }
-          it "send KEY_CODE message to keybard" do
+          it "send KEY_CODE message to keyboard" do
             expect(@keyboard).to receive(:type).with(param: "KEY_CODE", keep: "", clear: :none)
             subject
           end
@@ -61,7 +61,7 @@ module Fusuma
               @event = Events::Event.new(tag: "dummy_detector", record: record)
             end
 
-            it "send KEY_CODE_WITH_KEYPRESS message to keybard" do
+            it "send KEY_CODE_WITH_KEYPRESS message to keyboard" do
               expect(@keyboard).to receive(:type).with(param: "KEY_CODE_WITH_KEYPRESS", keep: "LEFTSHIFT", clear: :none)
               subject
             end
@@ -72,7 +72,7 @@ module Fusuma
                 @event = Events::Event.new(tag: "dummy_detector", record: record)
               end
 
-              it "send KEY_CODE_WITH_KEYPRESS_WITH_CLEAR message to keybard" do
+              it "send KEY_CODE_WITH_KEYPRESS_WITH_CLEAR message to keyboard" do
                 expect(@keyboard).to receive(:type).with(param: "KEY_CODE_WITH_KEYPRESS_WITH_CLEAR", keep: "LEFTALT", clear: true)
                 subject
               end
