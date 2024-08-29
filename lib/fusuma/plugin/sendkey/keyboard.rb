@@ -45,6 +45,20 @@ module Fusuma
           @device = Device.new(path: "/dev/input/#{device.id}")
         end
 
+        # @param params [Array]
+        def types(args)
+          return unless args.is_a?(Array)
+
+          args.each do |arg|
+            case arg
+            when String
+              type(param: arg)
+            when Hash
+              type(**arg)
+            end
+          end
+        end
+
         # @param param [String] key names separated by '+' to type
         # @param keep [String] key names separated by '+' to keep
         # @param clear [String, Symbol, TrueClass] key names separated by '+' to clear or :all to release all modifiers
@@ -80,11 +94,18 @@ module Fusuma
         end
 
         # @param param [String]
-        def valid?(param:)
-          return unless param.is_a?(String)
-
-          keycodes = param_to_keycodes(param)
-          keycodes.all? { |keycode| support?(keycode) }
+        def valid?(params)
+          case params
+          when Array
+            params.all? { |param| valid?(param) }
+          when String
+            param = params
+            keycodes = param_to_keycodes(param)
+            keycodes.all? { |keycode| support?(keycode) }
+          else
+            MultiLogger.error "sendkey: Invalid config: #{params}"
+            nil
+          end
         end
 
         def send_event(code:, press: true)

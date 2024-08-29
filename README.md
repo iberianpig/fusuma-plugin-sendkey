@@ -51,15 +51,23 @@ NEXTSONG
 PREVIOUSSONG
 ```
 
-## Run fusuma-sendkey on Terminal
+## Running fusuma-sendkey on Terminal
 
-* `fusuma-sendkey` command is available on your terminal
+* `fusuma-sendkey` command is available on your terminal for testing.
 * `fusuma-sendkey` supports modifier keys and multiple key presses.
-Combine keys for pressing the same time with `+` 
+   - Combine keys for pressing the same time with `+` 
+   - Separate keys for pressing sequentially with `,`
 
+### Example (Sendkey with Modifier Keys)
 
 ```sh
-$ fusuma-sendkey LEFTCTRL+T # press ctrl key + t key
+$ fusuma-sendkey LEFTCTRL+T # Open a new tab
+```
+
+### Example (Sendkey with Multiple Key Presses)
+
+```sh
+$ fusuma-sendkey ["LEFTSHIFT+F10", "T", "ENTER", "ESC"] # Google Translate
 ```
 
 Some of the keys found with `fusuma-sendkey -l` may actually be invalid keys.
@@ -83,6 +91,10 @@ swipe:
       sendkey: "LEFTCTRL+T" # open new tab
     down:
       sendkey: "LEFTCTRL+W" # close tab
+
+hold:
+  3:
+    sendkey: ["LEFTSHIFT+F10", "T", "ENTER", "ESC"] # Translate in Google Chrome
 ```
 
 ### clearmodifiers

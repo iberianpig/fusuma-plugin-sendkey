@@ -25,6 +25,8 @@ module Fusuma
                       sendkey: KEY_CODE_WITH_KEYPRESS_WITH_CLEAR
                       clearmodifiers: true
 
+                direction2: { sendkey: ["LEFTSHIFT+F10", "T", "ENTER", "ESC"] }
+
             plugin:
               executors:
                 sendkey_executor:
@@ -78,15 +80,28 @@ module Fusuma
               end
             end
           end
+
+          context "with multiple keys from sendkey array" do
+            before do
+              index_with_array = Config::Index.new([:dummy, 1, :direction2])
+              record = Events::Records::IndexRecord.new(index: index_with_array)
+              @event = Events::Event.new(tag: "dummy_detector", record: record)
+            end
+
+            it "sends each key from the sendkey array to keyboard" do
+              expect(@keyboard).to receive(:types).with(["LEFTSHIFT+F10", "T", "ENTER", "ESC"])
+              subject
+            end
+          end
         end
 
         describe "#executable?" do
           before do
-            allow(@keyboard).to receive(:valid?).with(param: "MODIFIER_CODE+KEY_CODE")
+            allow(@keyboard).to receive(:valid?).with("MODIFIER_CODE+KEY_CODE")
               .and_return true
-            allow(@keyboard).to receive(:valid?).with(param: "KEY_CODE")
+            allow(@keyboard).to receive(:valid?).with("KEY_CODE")
               .and_return true
-            allow(@keyboard).to receive(:valid?).with(param: "INVALID_CODE")
+            allow(@keyboard).to receive(:valid?).with("INVALID_CODE")
               .and_return false
           end
 
