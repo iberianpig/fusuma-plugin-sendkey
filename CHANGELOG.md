@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.11.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.11.0) (2024-08-30)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.10.1...v0.11.0)
+
+**Implemented enhancements:**
+
+- Sending multiple keys [\#31](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/31)
+- Send multiple keys [\#34](https://github.com/iberianpig/fusuma-plugin-sendkey/pull/34) ([iberianpig](https://github.com/iberianpig))
+
+**Fixed bugs:**
+
+- sendkey doesn't work [\#33](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/33)
+
+**Closed issues:**
+
+- Allow sending a key multiple times [\#6](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/6)
+
 ## [v0.10.1](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.10.1) (2023-09-03)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.10.0...v0.10.1)
