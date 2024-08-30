@@ -38,12 +38,12 @@ $ sudo gem install bundler
 $ sudo gem install fusuma-plugin-sendkey
 ```
 
-## List available keys
+## List Available Keys
 
 ```sh
 $ fusuma-sendkey -l
 ```
-If you want to look up a specific key, like the next song or the previous song, the `grep -i` refinement search is useful.
+To look up a specific key, such as the next or previous song, you can use the `grep -i` filter.
 
 ```sh
 $ fusuma-sendkey -l | grep -i song
@@ -71,26 +71,26 @@ $ fusuma-sendkey ["LEFTSHIFT+F10", "T", "ENTER", "ESC"] # Google Translate
 ```
 
 Some of the keys found with `fusuma-sendkey -l` may actually be invalid keys.
-So test it once with `fusuma-sendkey <KEYCODE>` and then add it to config.yml.
+So test them first with `fusuma-sendkey <KEYCODE>` before adding them to config.yml.
 
 
-## Add sendkey properties to config.yml
+## Add Sendkey Properties to config.yml
 
-Add `sendkey:` property in `~/.config/fusuma/config.yml`.
+Add the `sendkey:` property in your `~/.config/fusuma/config.yml`.
 
-lines beginning from `#` are comments
+Lines beginning with `#` are comments.
 
 ```yaml
 swipe:
   3:
     left:
-      sendkey: "LEFTALT+RIGHT" # history back
+      sendkey: "LEFTALT+RIGHT" # History back
     right:
-      sendkey: "LEFTALT+LEFT" # history forward
+      sendkey: "LEFTALT+LEFT" # History forward
     up:
-      sendkey: "LEFTCTRL+T" # open new tab
+      sendkey: "LEFTCTRL+T" # Open a new tab
     down:
-      sendkey: "LEFTCTRL+W" # close tab
+      sendkey: "LEFTCTRL+W" # Close a tab
 
 hold:
   3:
@@ -108,21 +108,19 @@ swipe:
       keypress:
         LEFTSHIFT:
           sendkey: "LEFTMETA+DOWN"
-          clearmodifiers: true # clear LEFTSHIFT before sending LEFTMETA+DOWN
+          clearmodifiers: true # Clear LEFTSHIFT before sending LEFTMETA+DOWN
 ```
 
+### Specify Keyboard by Device Name
 
-### Specify keyboard by device name
+If you encounter the following error message, please set your keyboard name in `plugin.executors.sendkey_executor.device_name` in config.yml.
 
-If you got following error message, try to set your keyboard name to `plugin.executors.sendkey_executor.device_name` on config.yml
-
-```shell
+```sh
 $ fusuma-sendkey -l
 sendkey: Keyboard: /keyboard|Keyboard|KEYBOARD/ is not found
 ```
 
-Set the following options to recognize keyboard only for the specified keyboard device.
-Open `~/.config/fusuma/config.yml` and add the following code at the bottom.
+Add the following code to the bottom of `~/.config/fusuma/config.yml` to recognize only the specified keyboard device.
 
 ```yaml
 plugin:
@@ -131,8 +129,7 @@ plugin:
       device_name: 'YOUR KEYBOARD NAME'
 ```
 
-**If [fusuma-plugin-remap](https://github.com/iberianpig/fusuma-plugin-remap) is available, it will be automatically connected to `fusuma_virtual_keyboard`, so `device_name` option is not required.**
-
+**Note**: If [fusuma-plugin-remap](https://github.com/iberianpig/fusuma-plugin-remap) is available, it will automatically connect to `fusuma_virtual_keyboard`, so the `device_name` option is not required.
 
 ## Contributing
 
