@@ -143,7 +143,6 @@ module Fusuma
 
             @device = instance_double(Sendkey::Device)
             allow(@device).to receive(:write_event).with(anything)
-            # allow(@device).to receive(:valid?).with(param: 'KEY_A')
 
             allow(Sendkey::Device).to receive(:new).and_return(@device)
 
@@ -281,6 +280,39 @@ module Fusuma
                   subject
                 end
               end
+            end
+          end
+        end
+
+        describe "#types" do
+          subject { @keyboard.types(@args) }
+          context "with multiple keys(Array)" do
+            before do
+              allow(Keyboard)
+                .to receive(:find_device)
+                .and_return(Fusuma::Device.new(name: "dummy keyboard"))
+
+              @device = instance_double(Sendkey::Device)
+              allow(@device).to receive(:write_event).with(anything)
+
+              allow(Sendkey::Device).to receive(:new).and_return(@device)
+
+              @keyboard = Keyboard.new
+              @args = ["LEFTSHIFT+F10", "T", "ENTER", "ESC"]
+            end
+
+            it "types LEFTSHIFT+F10, T, ENTER, ESC" do
+              expect(@keyboard).to receive(:send_event).with(code: "KEY_LEFTSHIFT", press: true).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "KEY_F10", press: true).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "KEY_F10", press: false).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "KEY_LEFTSHIFT", press: false).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "KEY_T", press: true).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "KEY_T", press: false).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "KEY_ENTER", press: true).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "KEY_ENTER", press: false).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "KEY_ESC", press: true).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "KEY_ESC", press: false).ordered
+              subject
             end
           end
         end

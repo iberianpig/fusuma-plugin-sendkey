@@ -26,12 +26,21 @@ module Fusuma
         # @param event [Event]
         # @return [nil]
         def execute(event)
-          MultiLogger.info(sendkey: search_param(event))
-          keyboard.type(
-            param: search_param(event),
-            keep: search_keypress(event),
-            clear: clearmodifiers(event)
-          )
+          params = search_param(event)
+          MultiLogger.info(sendkey: params)
+          case params
+          when Array
+            keyboard.types(params)
+          when String
+            keyboard.type(
+              param: params,
+              keep: search_keypress(event),
+              clear: clearmodifiers(event)
+            )
+          else
+            MultiLogger.error("sendkey: Invalid config: #{params}")
+            nil
+          end
         end
 
         # check executable
@@ -40,7 +49,7 @@ module Fusuma
         def executable?(event)
           event.tag.end_with?("_detector") &&
             event.record.type == :index &&
-            keyboard.valid?(param: search_param(event))
+            keyboard.valid?(search_param(event))
         end
 
         private
