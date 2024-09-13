@@ -48,7 +48,6 @@ end
 
 # remove [ and ] from args
 params = args.delete('[]').split(',').map(&:strip)
-require 'debug'; debugger
 
 keyboard = Fusuma::Plugin::Sendkey::Keyboard.new(name_pattern: device_name)
 return unless keyboard.valid?(params)
