@@ -24,7 +24,7 @@ opt.parse!(ARGV)
 device_name = Fusuma::Config.instance.fetch_config_params(
   :device_name,
   Fusuma::Config::Index.new([:plugin, :executors, :sendkey_executor])
-).fetch(:device_name, nil)
+).fetch(:device_name, 'keyboard|Keyboard|KEYBOARD')
 
 if option[:list]
   puts Fusuma::Plugin::Sendkey::Keyboard.new(name_pattern: device_name).search_codes
