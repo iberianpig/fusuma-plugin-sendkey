@@ -18,7 +18,7 @@ module Fusuma
 
         def config_param_types
           {
-            device_name: String
+            device_name: [String, Array]
           }
         end
 

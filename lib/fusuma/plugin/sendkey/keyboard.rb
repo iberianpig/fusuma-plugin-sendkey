@@ -34,7 +34,12 @@ module Fusuma
         end
 
         def initialize(name_pattern: nil)
-          device = Keyboard.find_device(name_pattern: name_pattern)
+          device = nil
+
+          Array(name_pattern).each do |pattern|
+            device = Keyboard.find_device(name_pattern: pattern)
+            break if device
+          end
 
           if device.nil?
             warn "sendkey: Keyboard: /#{name_pattern}/ is not found"
