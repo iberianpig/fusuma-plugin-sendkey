@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.12.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.12.0) (2024-09-21)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.11.1...v0.12.0)
+
+**Fixed bugs:**
+
+- sendkey: Keyboard: /keyboard|Keyboard|KEYBOARD/ is not found [\#16](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/16)
+
+## [v0.11.1](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.11.1) (2024-09-13)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.11.0...v0.11.1)
+
 ## [v0.11.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.11.0) (2024-08-30)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.10.1...v0.11.0)
