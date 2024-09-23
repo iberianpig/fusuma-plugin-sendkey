@@ -10,7 +10,7 @@ module Fusuma
     module Sendkey
       # Emulate Keyboard
       class Keyboard
-        INTERVAL = 0.01
+        INTERVAL = 0.03
 
         MODIFIER_KEY_CODES = %w[
           KEY_CAPSLOCK
@@ -24,30 +24,28 @@ module Fusuma
           KEY_RIGHTMETA
         ].freeze
 
-        def self.find_device(name_pattern:)
+        def self.find_device(name_patterns:)
           Fusuma::Device.reset
-          Fusuma::Device.all.find { |d|
-            next unless /keyboard/.match?(d.capabilities)
 
-            d.name.match(/#{name_pattern}/)
-          }
+          Array(name_patterns).each do |name_pattern|
+            fusuma_device = Fusuma::Device.all.find { |d|
+              next unless /keyboard/.match?(d.capabilities)
+
+              d.name.match(/#{name_pattern}/)
+            }
+
+            if fusuma_device
+              MultiLogger.info "sendkey: Keyboard: #{fusuma_device.name}"
+              return Device.new(path: "/dev/input/#{fusuma_device.id}")
+            end
+            warn "sendkey: Keyboard: /#{name_pattern}/ is not found"
+          end
+
+          exit(1)
         end
 
-        def initialize(name_pattern: nil)
-          device = nil
-
-          Array(name_pattern).each do |pattern|
-            device = Keyboard.find_device(name_pattern: pattern)
-            break if device
-          end
-
-          if device.nil?
-            warn "sendkey: Keyboard: /#{name_pattern}/ is not found"
-            exit(1)
-          end
-          MultiLogger.info "sendkey: Keyboard: #{device.name}"
-
-          @device = Device.new(path: "/dev/input/#{device.id}")
+        def initialize(device:)
+          @device = device
         end
 
         # @param params [Array]
@@ -70,8 +68,8 @@ module Fusuma
         def type(param:, keep: "", clear: :none)
           return unless param.is_a?(String)
 
-          param_keycodes = param_to_keycodes(param)
-          type_keycodes = param_keycodes - param_to_keycodes(keep)
+          param_keycodes = param_to_codes(param)
+          type_keycodes = param_keycodes - param_to_codes(keep)
 
           clear_keycodes =
             case clear
@@ -81,12 +79,13 @@ module Fusuma
               []
             else
               # release keys specified by clearmodifiers
-              param_to_keycodes(clear)
+              param_to_codes(clear)
             end
 
           clear_modifiers(clear_keycodes - param_keycodes)
 
           type_keycodes.each { |keycode| keydown(keycode) && key_sync }
+          sleep(INTERVAL)
           type_keycodes.reverse_each { |keycode| keyup(keycode) && key_sync }
         end
 
@@ -105,7 +104,7 @@ module Fusuma
             params.all? { |param| valid?(param) }
           when String
             param = params
-            keycodes = param_to_keycodes(param)
+            keycodes = param_to_codes(param)
             keycodes.all? { |keycode| support?(keycode) }
           else
             MultiLogger.error "sendkey: Invalid config: #{params}"
@@ -131,35 +130,29 @@ module Fusuma
             0
           )
           @device.write_event(event)
-          sleep(INTERVAL)
         end
 
-        def support?(keycode)
+        def support?(code)
           @supported_code ||= {}
-          @supported_code[keycode] ||= find_code(keycode: keycode)
+          @supported_code[code] ||= find_code(code)
         end
 
-        def warn_undefined_codes(keycode:)
-          query = keycode&.upcase&.gsub("KEY_", "")
-
-          candidates = search_codes(query: query)
+        def warn_undefined_codes(code)
+          candidates = search_codes(code)
 
           warn "Did you mean? #{candidates.join(" / ")}" unless candidates.empty?
-          warn "sendkey: #{remove_prefix(keycode)} is unsupported."
+
+          warn "sendkey: #{remove_prefix(code)} is unsupported."
         end
 
-        def search_codes(query: nil)
-          Revdev.constants
-            .select { |c| c[/KEY_.*#{query}.*/] }
-            .map { |c| c.to_s.gsub("KEY_", "") }
+        def search_codes(code)
+          Revdev.constants.select { |c| c[code] }
         end
 
-        def find_code(keycode: nil)
-          query = keycode&.upcase&.gsub("KEY_", "")
+        def find_code(code)
+          result = Revdev.constants.find { |c| c == code.to_sym }
 
-          result = Revdev.constants.find { |c| c == "KEY_#{query}".to_sym }
-
-          warn_undefined_codes(keycode: keycode) unless result
+          warn_undefined_codes(code) unless result
           result
         end
 
@@ -174,14 +167,18 @@ module Fusuma
 
         # @param [String]
         # @return [Array<String>]
-        def param_to_keycodes(param)
-          param.split("+").map { |keyname| add_key_prefix(keyname) }
+        def param_to_codes(param)
+          param.split("+").map { |keyname| add_prefix(keyname) }
         end
 
         private
 
-        def add_key_prefix(code)
-          "KEY_#{code.upcase}"
+        def add_prefix(code)
+          if code.start_with?("BTN_")
+            code.upcase
+          else
+            "KEY_#{code.upcase}"
+          end
         end
 
         def remove_prefix(keycode)

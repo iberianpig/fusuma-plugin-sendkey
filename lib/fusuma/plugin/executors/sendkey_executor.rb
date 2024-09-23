@@ -55,7 +55,10 @@ module Fusuma
         private
 
         def keyboard
-          @keyboard ||= Sendkey::Keyboard.new(name_pattern: @device_name)
+          @keyboard ||= begin
+            device = Sendkey::Keyboard.find_device(name_patterns: @device_name)
+            Sendkey::Keyboard.new(device: device)
+          end
         end
 
         def search_param(event)

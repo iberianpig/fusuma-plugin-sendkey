@@ -8,56 +8,34 @@ module Fusuma
   module Plugin
     module Sendkey
       RSpec.describe Keyboard do
-        describe "#new" do
-          subject { Keyboard.new }
+        describe ".find_device" do
+          let(:name_patterns) { "keyboard" }
+          let(:dummy_device) { instance_double(Device) }
+
+          before do
+            allow(Fusuma::Device).to receive(:reset)
+          end
 
           context "when keyboard is found" do
             before do
-              dummy_keyboard = Fusuma::Device.new(name: "dummy keyboard")
-              allow(Keyboard)
-                .to receive(:find_device)
-                .and_return(dummy_keyboard)
-              allow(Sendkey::Device).to receive(:new).and_return("dummy")
+              dummy_keyboard = Fusuma::Device.new(id: "dummy", name: "dummy keyboard", capabilities: "keyboard")
+              allow(Fusuma::Device).to receive(:all).and_return([dummy_keyboard])
+              allow(Sendkey::Device).to receive(:new).with(path: "/dev/input/dummy").and_return(dummy_device)
             end
 
-            it { is_expected.to be_a Keyboard }
+            it { expect(Keyboard.find_device(name_patterns: name_patterns)).to eq dummy_device }
           end
 
           context "when keyboard is not found" do
             before do
-              allow(Keyboard).to receive(:find_device).and_return(nil)
+              allow(Fusuma::Device).to receive(:all).and_return([])
             end
 
-            it { expect { subject }.to raise_error(SystemExit) }
+            it { expect { Keyboard.find_device(name_patterns: name_patterns) }.to raise_error(SystemExit) }
           end
 
-          context "when detected device name is Keyboard (Capitarized)" do
-            before do
-              other_device = Fusuma::Device.new(name: "Keyboard (Capitarized)", id: "dummy")
-
-              allow(Keyboard)
-                .to receive(:find_device)
-                .and_return(other_device)
-              allow(Sendkey::Device).to receive(:new).and_return("dummy")
-            end
-
-            it { is_expected.to be_a Keyboard }
-          end
-
-          context "when detected device name is KEYBOARD (UPPER CASE)" do
-            before do
-              other_device = Fusuma::Device.new(name: "KEYBOARD(UPPER CASE)", id: "dummy")
-              allow(Keyboard)
-                .to receive(:find_device)
-                .and_return(other_device)
-              allow(Sendkey::Device).to receive(:new).and_return("dummy")
-            end
-
-            it { is_expected.to be_a Keyboard }
-          end
-
-          context "with given name pattern" do
-            subject { Keyboard.new(name_pattern: "Awesome KEY/BOARD") }
+          context "with multiple name patterns" do
+            let(:name_patterns) { ["foobar", "KEY/BOARD"] }
 
             before do
               specified_device = Fusuma::Device.new(
@@ -66,71 +44,16 @@ module Fusuma
                 capabilities: "keyboard"
               )
               allow(Fusuma::Device).to receive(:all).and_return([specified_device])
-              allow(Sendkey::Device).to receive(:new).and_return("dummy")
+              allow(Sendkey::Device).to receive(:new).with(path: "/dev/input/dummy").and_return(dummy_device)
             end
 
-            it { is_expected.to be_a Keyboard }
+            it { expect(Keyboard.find_device(name_patterns: name_patterns)).to eq dummy_device }
           end
+        end
 
-          context "when name pattern (use default) is not given" do
-            subject { Keyboard.new(name_pattern: nil) }
-
-            before do
-              allow(Sendkey::Device).to receive(:new).and_return("dummy")
-            end
-
-            context "when exist device named keyboard(lower-case)" do
-              before do
-                specified_device = Fusuma::Device.new(
-                  name: "keyboard",
-                  id: "dummy",
-                  capabilities: "keyboard"
-                )
-                allow(Fusuma::Device).to receive(:all).and_return([specified_device])
-              end
-
-              it { is_expected.to be_a Keyboard }
-            end
-
-            context "when exist device named Keyboard(Capital-case)" do
-              before do
-                specified_device = Fusuma::Device.new(
-                  name: "Keyboard",
-                  id: "dummy",
-                  capabilities: "keyboard"
-                )
-                allow(Fusuma::Device).to receive(:all).and_return([specified_device])
-              end
-
-              it { is_expected.to be_a Keyboard }
-            end
-
-            context "when exist device named KEYBOARD(UPPER case)" do
-              before do
-                specified_device = Fusuma::Device.new(
-                  name: "KEYBOARD",
-                  id: "dummy",
-                  capabilities: "keyboard"
-                )
-                allow(Fusuma::Device).to receive(:all).and_return([specified_device])
-              end
-
-              it { is_expected.to be_a Keyboard }
-            end
-
-            context "when exist no device named keyboard|Keyboard|KEYBOARD" do
-              before do
-                specified_device = Fusuma::Device.new(
-                  name: "KEY-BOARD",
-                  id: "dummy",
-                  capabilities: "keyboard"
-                )
-                allow(Fusuma::Device).to receive(:all).and_return([specified_device])
-              end
-
-              it { is_expected.to be_a Keyboard }
-            end
-          end
+        describe "#new" do
+          subject { Keyboard.new(device: device) }
+          let(:device) { instance_double(Sendkey::Device) }
         end
 
         describe "#type" do
@@ -146,7 +69,7 @@ module Fusuma
 
             allow(Sendkey::Device).to receive(:new).and_return(@device)
 
-            @keyboard = Keyboard.new
+            @keyboard = Keyboard.new(device: @device)
             @keys = ""
             @keep = ""
             @clear = :none
@@ -158,6 +81,34 @@ module Fusuma
             expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: true).ordered
             expect(@keyboard).to receive(:send_event).with(code: "KEY_A", press: false).ordered
             subject
+          end
+
+          context "with mouse button" do
+            before do
+              @keys = "BTN_LEFT"
+            end
+
+            it "presses button BTN_LEFT and release button BTN_LEFT" do
+              expect(@keyboard).to receive(:clear_modifiers).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "BTN_LEFT", press: true).ordered
+              expect(@keyboard).to receive(:send_event).with(code: "BTN_LEFT", press: false).ordered
+              subject
+            end
+
+            context "with modifier keys" do
+              before do
+                @keys = "LEFTSHIFT+BTN_LEFT"
+              end
+
+              it "types (Shift)BTN_LEFT" do
+                expect(@keyboard).to receive(:clear_modifiers).with([]).ordered
+                expect(@keyboard).to receive(:send_event).with(code: "KEY_LEFTSHIFT", press: true).ordered
+                expect(@keyboard).to receive(:send_event).with(code: "BTN_LEFT", press: true).ordered
+                expect(@keyboard).to receive(:send_event).with(code: "BTN_LEFT", press: false).ordered
+                expect(@keyboard).to receive(:send_event).with(code: "KEY_LEFTSHIFT", press: false).ordered
+                subject
+              end
+            end
           end
 
           context "with modifier keys" do
@@ -297,7 +248,7 @@ module Fusuma
 
               allow(Sendkey::Device).to receive(:new).and_return(@device)
 
-              @keyboard = Keyboard.new
+              @keyboard = Keyboard.new(device: @device)
               @args = ["LEFTSHIFT+F10", "T", "ENTER", "ESC"]
             end
 
