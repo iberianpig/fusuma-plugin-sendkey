@@ -29,7 +29,7 @@ module Fusuma
 
           Array(name_patterns).each do |name_pattern|
             fusuma_device = Fusuma::Device.all.find { |d|
-              next unless /keyboard/.match?(d.capabilities)
+              next unless d.capabilities.include?("keyboard")
 
               d.name.match(/#{name_pattern}/)
             }
@@ -132,13 +132,24 @@ module Fusuma
           @device.write_event(event)
         end
 
+        def capabilities
+          return @capabilities if defined?(@capabilities)
+
+          @capabilities = Set.new.tap do |set|
+            @device.reload_capability.each do |id|
+              code_sym = Revdev::REVERSE_MAPS[:KEY][id]
+              set << code_sym if code_sym
+            end
+          end
+        end
+
         def support?(code)
           @supported_code ||= {}
           @supported_code[code] ||= find_code(code)
         end
 
         def warn_undefined_codes(code)
-          candidates = search_codes(code)
+          candidates = search_codes(code).map { |c| remove_prefix(c.to_s) }
 
           warn "Did you mean? #{candidates.join(" / ")}" unless candidates.empty?
 
@@ -146,11 +157,11 @@ module Fusuma
         end
 
         def search_codes(code)
-          Revdev.constants.select { |c| c[code] }
+          capabilities.select { |c| c[code] }
         end
 
         def find_code(code)
-          result = Revdev.constants.find { |c| c == code.to_sym }
+          result = capabilities.find { |c| c == code.to_sym }
 
           warn_undefined_codes(code) unless result
           result
@@ -174,10 +185,11 @@ module Fusuma
         private
 
         def add_prefix(code)
+          code.upcase!
           if code.start_with?("BTN_")
-            code.upcase
+            code
           else
-            "KEY_#{code.upcase}"
+            "KEY_#{code}"
           end
         end
 

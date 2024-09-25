@@ -10,7 +10,7 @@ module Fusuma
       RSpec.describe Keyboard do
         describe ".find_device" do
           let(:name_patterns) { "keyboard" }
-          let(:dummy_device) { instance_double(Device) }
+          let(:dummy_device) { instance_double(Sendkey::Device) }
 
           before do
             allow(Fusuma::Device).to receive(:reset)
@@ -60,9 +60,7 @@ module Fusuma
           subject { @keyboard.type(param: @keys, keep: @keep, clear: @clear) }
 
           before do
-            allow(Keyboard)
-              .to receive(:find_device)
-              .and_return(Fusuma::Device.new(name: "dummy keyboard"))
+            allow(Keyboard).to receive(:find_device).and_return(Fusuma::Device.new(name: "dummy keyboard"))
 
             @device = instance_double(Sendkey::Device)
             allow(@device).to receive(:write_event).with(anything)
@@ -239,9 +237,7 @@ module Fusuma
           subject { @keyboard.types(@args) }
           context "with multiple keys(Array)" do
             before do
-              allow(Keyboard)
-                .to receive(:find_device)
-                .and_return(Fusuma::Device.new(name: "dummy keyboard"))
+              allow(Keyboard).to receive(:find_device).and_return(Fusuma::Device.new(name: "dummy keyboard"))
 
               @device = instance_double(Sendkey::Device)
               allow(@device).to receive(:write_event).with(anything)
@@ -264,6 +260,107 @@ module Fusuma
               expect(@keyboard).to receive(:send_event).with(code: "KEY_ESC", press: true).ordered
               expect(@keyboard).to receive(:send_event).with(code: "KEY_ESC", press: false).ordered
               subject
+            end
+          end
+        end
+
+        describe "#capabilities" do
+          subject { @keyboard.capabilities }
+
+          before do
+            allow(Keyboard).to receive(:find_device).and_return(Fusuma::Device.new(name: "dummy keyboard"))
+
+            @device = instance_double(Sendkey::Device)
+            allow(@device).to receive(:reload_capability).and_return([30, 31, 32, 33])
+            allow(Sendkey::Device).to receive(:new).and_return(@device)
+
+            @keyboard = Keyboard.new(device: @device)
+          end
+
+          it "returns the capabilities of the keyboard" do
+            expect(@keyboard.capabilities).to include(:KEY_A, :KEY_S, :KEY_D, :KEY_F)
+          end
+        end
+
+        describe "#valid?" do
+          subject { @keyboard.valid?(params) }
+
+          before do
+            allow(Keyboard).to receive(:find_device).and_return(Fusuma::Device.new(name: "dummy keyboard"))
+
+            @device = instance_double(Sendkey::Device)
+            allow(@device).to receive(:reload_capability).and_return([30, 31, 32, 33])
+            allow(Sendkey::Device).to receive(:new).and_return(@device)
+
+            @keyboard = Keyboard.new(device: @device)
+          end
+
+          context "when params is an array" do
+            let(:params) { ["A", "B", "C"] }
+
+            it "returns true if all keys are supported" do
+              allow(@keyboard).to receive(:support?).and_return(true)
+              expect(subject).to be_truthy
+            end
+
+            it "returns false if any key is unsupported" do
+              allow(@keyboard).to receive(:support?).and_return(false)
+              expect(subject).to be_falsy
+            end
+          end
+
+          context "when params is a string" do
+            let(:params) { "A+B" }
+
+            it "returns true if all keys are supported" do
+              allow(@keyboard).to receive(:support?).and_return(true)
+              expect(subject).to be_truthy
+            end
+
+            it "returns false if any key is unsupported" do
+              allow(@keyboard).to receive(:support?).and_return(false)
+              expect(subject).to be_falsy
+            end
+          end
+
+          context "when params is invalid" do
+            let(:params) { 12345 }
+
+            it "logs an error and returns nil" do
+              expect(MultiLogger).to receive(:error).with("sendkey: Invalid config: 12345")
+              expect(subject).to be_nil
+            end
+          end
+        end
+
+        describe "#support?" do
+          subject { @keyboard.support?(code) }
+
+          before do
+            allow(Keyboard).to receive(:find_device).and_return(Fusuma::Device.new(name: "dummy keyboard"))
+
+            @device = instance_double(Sendkey::Device)
+            allow(@device).to receive(:reload_capability).and_return([1, 2, 3])
+            allow(Sendkey::Device).to receive(:new).and_return(@device)
+
+            @keyboard = Keyboard.new(device: @device)
+          end
+
+          context "when the code is supported" do
+            let(:code) { "KEY_A" }
+
+            it "returns true" do
+              allow(@keyboard).to receive(:find_code).and_return(true)
+              expect(subject).to be_truthy
+            end
+          end
+
+          context "when the code is not supported" do
+            let(:code) { "KEY_X" }
+
+            it "returns false and logs warning" do
+              expect(@keyboard).to receive(:warn_undefined_codes).with(code)
+              expect(subject).to be_falsy
             end
           end
         end

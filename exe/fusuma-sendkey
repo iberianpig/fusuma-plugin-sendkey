@@ -34,7 +34,7 @@ name_patterns = Fusuma::Config.instance.fetch_config_params(:device_name, execut
 device = Fusuma::Plugin::Sendkey::Keyboard.find_device(name_patterns: name_patterns)
 keyboard = Fusuma::Plugin::Sendkey::Keyboard.new(device: device)
 if option[:list]
-  puts keyboard.search_codes("KEY_")
+  puts keyboard.search_codes("KEY_").map { |sym| sym.to_s.delete_prefix("KEY_") }
   puts keyboard.search_codes("BTN_")
   return
 end
