@@ -19,7 +19,13 @@ opt.on('--version', 'Show version') do |v|
   option[:version] = v
 end
 
-opt.parse!(ARGV)
+begin
+  opt.parse!(ARGV)
+rescue OptionParser::InvalidOption => e
+  warn e
+  warn opt.help
+  exit 1
+end
 
 device_name = Fusuma::Config.instance.fetch_config_params(
   :device_name,
