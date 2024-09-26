@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.13.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.13.0) (2024-09-26)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.12.0...v0.13.0)
+
+**Implemented enhancements:**
+
+- Send BTN\_LEFT with sendkey for mouse buttons [\#36](https://github.com/iberianpig/fusuma-plugin-sendkey/pull/36) ([iberianpig](https://github.com/iberianpig))
+
 ## [v0.12.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.12.0) (2024-09-21)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.11.1...v0.12.0)
