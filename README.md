@@ -14,14 +14,14 @@ Run the following code in your terminal.
 #### For Debian Based Distros (Ubuntu, Debian, Mint, Pop!_OS)
 
 **NOTE: If you have installed ruby by apt, you must install ruby-dev.**
-```bash
-$ sudo apt-get install libevdev-dev ruby-dev build-essential
+```sh
+sudo apt-get install libevdev-dev ruby-dev build-essential
 ```
 
 #### For Arch Based Distros (Manjaro, Arch)
 
 ```zsh
-$ sudo pacman -S libevdev base-devel
+sudo pacman -S libevdev base-devel
 ```
 
 ### 2. Install fusuma-plugin-sendkey
@@ -33,20 +33,20 @@ To install gems system-wide, see any of the methods listed on [Arch Wiki](https:
 
 
 ```sh
-$ sudo gem install revdev
-$ sudo gem install bundler
-$ sudo gem install fusuma-plugin-sendkey
+sudo gem install revdev
+sudo gem install bundler
+sudo gem install fusuma-plugin-sendkey
 ```
 
 ## List Available Keys
 
 ```sh
-$ fusuma-sendkey -l
+fusuma-sendkey -l
 ```
 To look up a specific key, such as the next or previous song, you can use the `grep -i` filter.
 
 ```sh
-$ fusuma-sendkey -l | grep -i song
+fusuma-sendkey -l | grep -i song
 NEXTSONG
 PREVIOUSSONG
 ```
@@ -61,13 +61,13 @@ PREVIOUSSONG
 ### Example (Sendkey with Modifier Keys)
 
 ```sh
-$ fusuma-sendkey LEFTCTRL+T # Open a new tab
+fusuma-sendkey LEFTCTRL+T # Open a new tab
 ```
 
 ### Example (Sendkey with Multiple Key Presses)
 
 ```sh
-$ fusuma-sendkey ["LEFTSHIFT+F10", "T", "ENTER", "ESC"] # Google Translate
+fusuma-sendkey ["LEFTSHIFT+F10", "T", "ENTER", "ESC"] # Google Translate
 ```
 
 Some of the keys found with `fusuma-sendkey -l` may actually be invalid keys.
@@ -116,7 +116,7 @@ swipe:
 If you encounter the following error message, please set your keyboard name in `plugin.executors.sendkey_executor.device_name` in config.yml.
 
 ```sh
-$ fusuma-sendkey -l
+fusuma-sendkey -l
 sendkey: Keyboard: /keyboard|Keyboard|KEYBOARD/ is not found
 ```
 
