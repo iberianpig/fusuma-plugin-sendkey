@@ -1,21 +1,23 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'optparse'
-require 'fusuma/config'
-require 'fusuma/plugin/inputs/libinput_command_input.rb'
-require_relative '../lib/fusuma/plugin/sendkey/keyboard.rb'
-require_relative '../lib/fusuma/plugin/sendkey/version.rb'
+require "optparse"
+require "fusuma/config"
+require "fusuma/plugin/executors/executor"
+require "fusuma/plugin/inputs/libinput_command_input"
+require_relative "../lib/fusuma/plugin/sendkey/keyboard"
+require_relative "../lib/fusuma/plugin/executors/sendkey_executor"
+require_relative "../lib/fusuma/plugin/sendkey/version"
 
 option = {}
 opt = OptionParser.new
 
-opt.on('-l', '--list-keycodes',
-       'List available keycodes') do |v|
+opt.on("-l", "--list-keycodes",
+  "List available keycodes") do |v|
   option[:list] = v
 end
 
-opt.on('--version', 'Show version') do |v|
+opt.on("--version", "Show version") do |v|
   option[:version] = v
 end
 
@@ -27,35 +29,34 @@ rescue OptionParser::InvalidOption => e
   exit 1
 end
 
-device_name = Fusuma::Config.instance.fetch_config_params(
-  :device_name,
-  Fusuma::Config::Index.new([:plugin, :executors, :sendkey_executor])
-).fetch(:device_name)
-
-if option[:list]
-  puts Fusuma::Plugin::Sendkey::Keyboard.new(name_pattern: device_name).search_codes
+if option[:version]
+  puts Fusuma::Plugin::Sendkey::VERSION
   return
 end
 
-if option[:version]
-  puts Fusuma::Plugin::Sendkey::VERSION
+executor_index = Fusuma::Config::Index.new([:plugin, :executors, :sendkey_executor])
+name_patterns = Fusuma::Config.instance.fetch_config_params(:device_name, executor_index).fetch(:device_name)
+
+device = Fusuma::Plugin::Sendkey::Keyboard.find_device(name_patterns: name_patterns)
+keyboard = Fusuma::Plugin::Sendkey::Keyboard.new(device: device)
+if option[:list]
+  puts keyboard.search_codes("KEY_").map { |sym| sym.to_s.delete_prefix("KEY_") }
+  puts keyboard.search_codes("BTN_")
   return
 end
 
 args = ARGV.first
 
 if args.nil?
-  warn 'fusuma-sendkey require 1 arugument'
-  warn 'e.g. fusuma-sendkey LEFTALT+LEFT'
-  warn 'e.g. fusuma-sendkey [A, B, C]'
+  warn "fusuma-sendkey require 1 arugument"
+  warn "e.g. fusuma-sendkey LEFTALT+LEFT"
+  warn "e.g. fusuma-sendkey [A, B, C]"
   exit 1
 end
 
-
 # remove [ and ] from args
-params = args.delete('[]').split(',').map(&:strip)
+params = args.delete("[]").split(",").map(&:strip)
 
-keyboard = Fusuma::Plugin::Sendkey::Keyboard.new(name_pattern: device_name)
 return unless keyboard.valid?(params)
 
 if params.size == 1
