@@ -14,7 +14,7 @@ Run the following code in your terminal.
 #### For Debian Based Distros (Ubuntu, Debian, Mint, Pop!_OS)
 
 **NOTE: If you have installed ruby by apt, you must install ruby-dev.**
-```sh
+```bash
 $ sudo apt-get install libevdev-dev ruby-dev build-essential
 ```
 
