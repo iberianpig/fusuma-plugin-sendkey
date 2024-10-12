@@ -10,7 +10,7 @@ module Fusuma
     module Sendkey
       # Emulate Keyboard
       class Keyboard
-        INTERVAL = 0.03
+        KEY_INTERVAL = 0.03
 
         MODIFIER_KEY_CODES = %w[
           KEY_CAPSLOCK
@@ -84,9 +84,8 @@ module Fusuma
 
           clear_modifiers(clear_keycodes - param_keycodes)
 
-          type_keycodes.each { |keycode| keydown(keycode) && key_sync }
-          sleep(INTERVAL)
-          type_keycodes.reverse_each { |keycode| keyup(keycode) && key_sync }
+          type_keycodes.each { |keycode| keydown(keycode) && key_sync && sleep(KEY_INTERVAL) }
+          type_keycodes.reverse_each { |keycode| keyup(keycode) && key_sync && sleep(KEY_INTERVAL) }
         end
 
         def keydown(keycode)
