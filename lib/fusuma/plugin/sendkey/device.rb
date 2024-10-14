@@ -2,12 +2,15 @@
 
 require "revdev"
 require "set"
+require_relative "linux/input"
 
 module Fusuma
   module Plugin
     module Sendkey
       # handle Evdev device
       class Device
+        include Linux::INPUT
+
         def initialize(path:)
           @evdev = Revdev::EventDevice.new(path)
           @capabilities = Set.new
@@ -41,12 +44,15 @@ module Fusuma
 
         private
 
-        EVIOCGBIT = 2153792801
-
         def fetch_capabilities
           file = File.open(path, "r")
           buf = +"" # unfreeze string
-          file.ioctl(EVIOCGBIT, buf)
+
+          # EVIOCGBIT: Get the bit mask of the event types supported by the input device.
+          # EV_KEY: The event type is EV_KEY, which means that the device supports key events.
+          # KEY_CNT / 8: The number of bytes required to store the bit mask of the key codes.
+          # file.ioctl: Get the bit mask of the key codes supported by the input device.
+          file.ioctl(EVIOCGBIT(EV_KEY, KEY_CNT / 8), buf)
           buf
         end
       end
