@@ -97,7 +97,10 @@ module Fusuma
         end
 
         # @param param [String]
+        # @return [TrueClass, FalseClass]
         def valid?(params)
+          return false if params.nil?
+
           case params
           when Array
             params.all? { |param| valid?(param) }
