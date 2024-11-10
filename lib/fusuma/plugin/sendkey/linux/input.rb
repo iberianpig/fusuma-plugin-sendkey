@@ -7,15 +7,15 @@ module Fusuma
     module Sendkey
       module Linux
         # https://github.com/jtzero/vigilem-evdev/blob/master/lib/vigilem/evdev/system/input.rb?plain=1#L18
-        module INPUT
-          include IOCTRL
-          module MACROS
+        module Input
+          include Ioctl
+          module Macros
             # /* get event bits */
             def EVIOCGBIT(evtype, len = 255)
               _IOC(_IOC_READ, "E", 0x20 + evtype, len)
             end
           end
-          include MACROS
+          include Macros
 
           module EventTypes
             EV_SYN = 0x00

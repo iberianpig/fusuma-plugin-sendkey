@@ -9,7 +9,7 @@ module Fusuma
     module Sendkey
       # handle Evdev device
       class Device
-        include Linux::INPUT
+        include Linux::Input
 
         def initialize(path:)
           @evdev = Revdev::EventDevice.new(path)

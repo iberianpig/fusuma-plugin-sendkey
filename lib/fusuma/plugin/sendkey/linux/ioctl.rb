@@ -5,7 +5,7 @@ module Fusuma
     module Sendkey
       module Linux
         # https://github.com/jtzero/vigilem-evdev/blob/master/lib/vigilem/evdev/system/ioctl.rb?plain=1#L16
-        module IOCTRL
+        module Ioctl
           # @return [Integer] 8
           def _IOC_NRBITS
             8
