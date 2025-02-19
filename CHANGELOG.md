@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.14.0](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.14.0) (2025-02-19)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.13.2...v0.14.0)
+
+**Fixed bugs:**
+
+- Crashes When the Gesture Is Performed While the First Device Is Not Available [\#41](https://github.com/iberianpig/fusuma-plugin-sendkey/issues/41)
+
+## [v0.13.2](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.13.2) (2024-10-22)
+
+[Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.13.1...v0.13.2)
+
 ## [v0.13.1](https://github.com/iberianpig/fusuma-plugin-sendkey/tree/v0.13.1) (2024-10-12)
 
 [Full Changelog](https://github.com/iberianpig/fusuma-plugin-sendkey/compare/v0.13.0...v0.13.1)
