@@ -41,6 +41,9 @@ module Fusuma
             MultiLogger.error("sendkey: Invalid config: #{params}")
             nil
           end
+        rescue Errno::ENODEV => e # device is removed
+          MultiLogger.error "Device is removed: #{e.message}"
+          @keyboard = nil
         end
 
         # check executable
