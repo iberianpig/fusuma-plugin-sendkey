@@ -18,6 +18,12 @@ Run the following code in your terminal.
 $ sudo apt-get install libevdev-dev ruby-dev build-essential
 ```
 
+#### For Red Hat Based Distros (Fedora, RHEL)
+
+```sh
+$ sudo dnf install ruby-devel
+```
+
 #### For Arch Based Distros (Manjaro, Arch)
 
 ```zsh
